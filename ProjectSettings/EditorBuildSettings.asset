@@ -9,18 +9,6 @@ EditorBuildSettings:
     path: Assets/Scenes/Menus/Menus.unity
     guid: 3a4a8fec2a190ad46946072763309299
   - enabled: 1
-    path: Assets/Scenes/Menus/Settings.unity
-    guid: 576899972da964548850e5b52599c72f
-  - enabled: 1
-    path: Assets/Scenes/Menus/CharSelect.unity
-    guid: dea3d8fbd2ad2b74e91d0e799a24106f
-  - enabled: 1
-    path: Assets/Scenes/Levels/Level1.unity
+    path: Assets/Scenes/Levels/LevelOne.unity
     guid: fa622cad3bc77524ebbc9c4ef86a263e
-  - enabled: 1
-    path: Assets/Scenes/WinLose/GameOver.unity
-    guid: 89f617b48eb527641a0ca725946f74c6
-  - enabled: 1
-    path: Assets/Scenes/WinLose/Victory.unity
-    guid: 474cdb34e4a3c234ab6ef9dd5703cb7b
   m_configObjects: {}
