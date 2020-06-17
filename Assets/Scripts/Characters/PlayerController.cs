@@ -13,6 +13,17 @@ public class PlayerController : CharacterStats {
             float mouseHorizontal = Input.GetAxisRaw("Mouse X");
             float mouseVertical = Input.GetAxisRaw("Mouse Y");
             CameraController.FollowPlayer(mouseHorizontal, mouseVertical, this);
+
+            //Locks the Cursor
+            if(Input.GetKeyDown(KeyCode.Escape)) {
+                if(Cursor.lockState == CursorLockMode.Confined) {
+                    Cursor.lockState = CursorLockMode.None;
+                    Cursor.visible = true;
+                } else {
+                    Cursor.lockState = CursorLockMode.Locked;
+                    Cursor.visible = false;
+                }
+            }
         }
     }
 

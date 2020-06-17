@@ -11,12 +11,13 @@ public class CharacterStats : MonoBehaviour{
     public bool CanMove = true;
 
     [Header("Camera Options")]
-    public float HorizontalSensitivity = 5;
-    public float VerticalSensitivity = 3;
-    public float CameraHeight = 10;
-    public float CameraDistance = 10;
-    public float CameraMinDistance = 1;
-    public float CameraHorizontalOffset = 10;
+    public float HorizontalSensitivity = 1;
+    public float VerticalSensitivity = 0.2f;
+    public float CameraHeight = 1;
+    public float CameraDistance = 2.5f;
+    public float CameraMinDistance = 0.2f;
+    public float CameraHorizontalOffset = 1;
+    public float CameraViewDistance = 1;
     public bool HoverRight = true;
     public LayerMask CameraMask;
 
