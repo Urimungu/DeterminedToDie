@@ -1,21 +1,32 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEditor;
+using UnityEngine.EventSystems;
 
+[RequireComponent(typeof(MenuData))]
 public class MainMenu : MonoBehaviour
 {
-    //Loads the Settings
-    public void SettingsBtn()
+    private MenuData data;
+    private string menu;
+
+    private void Start()
     {
-        SceneManager.LoadScene(1);
+        data = GetComponent<MenuData>();
     }
 
-    //Loads the characterSelection
-    public void PlayBtn()
+    //changes menu
+    public void ChangeMenu(string menu)
     {
-        SceneManager.LoadScene(2);
+        //string btnPressed = EventSystem.current.currentSelectedGameObject.name;
+
+        for (int i = 0; i < data.menus.Count; i++)
+        {
+            if (data.menus[i].name.Contains(menu))
+                data.menus[i].SetActive(true);
+            else
+                data.menus[i].SetActive(false);
+        }
     }
 
     //Quits the game and closes editor
