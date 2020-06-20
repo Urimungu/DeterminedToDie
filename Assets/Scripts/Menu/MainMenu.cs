@@ -23,9 +23,13 @@ public class MainMenu : MonoBehaviour
         for (int i = 0; i < data.menus.Count; i++)
         {
             if (data.menus[i].name.Contains(menu))
-                data.menus[i].SetActive(true);
+            {
+                Instantiate(data.menus[i], data.canvas.transform);
+            }
             else
+            {
                 data.menus[i].SetActive(false);
+            }
         }
     }
 
