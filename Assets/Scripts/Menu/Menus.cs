@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(MenuData))]
 public class Menus : MonoBehaviour
@@ -13,11 +14,17 @@ public class Menus : MonoBehaviour
         _data = GetComponent<MenuData>();
     }
 
-    //changes menu
+    //Changes Menu
     public void ChangeMenu(string menu)
     {
         for (int i = 0; i < _data.menus.Count; i++)
             _data.menus[i].SetActive(_data.menus[i].name.Contains(menu));
+    }
+
+    //Changes Scene
+    public void ChangeScene(int scene)
+    {
+        SceneManager.LoadScene(scene);
     }
 
     //Quits the game and closes editor
