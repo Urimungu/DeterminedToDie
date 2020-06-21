@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEditor;
 
 [RequireComponent(typeof(MenuData))]
-public class MainMenu : MonoBehaviour
+public class Menus : MonoBehaviour
 {
     protected MenuData _data;
 
