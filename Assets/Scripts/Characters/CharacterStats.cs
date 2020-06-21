@@ -3,30 +3,68 @@
 public class CharacterStats : MonoBehaviour{
 
     [Header("Stats")]
-    public float CrouchingSpeed = 5;
+    public float CrouchingSpeed = 4;
     public float WalkingSpeed = 10;
     public float RunningSpeed = 15;
+    public float AimingWalkSpeed = 6;
+    public float AirSpeed = 3;
+    public float JumpForce = 3;
+    public enum MovementState { Walking, Running, Crouching, Aiming};
+    public MovementState MoveState;
 
     [Header("Variables")]
     public bool CanMove = true;
+    public float CheckGroundRay = 0.3f;
+    public LayerMask GroundMask;
 
     [Header("Camera Options")]
-    public float HorizontalSensitivity = 1;
+    public float HorizontalSensitivity = 3;
     public float VerticalSensitivity = 0.2f;
     public float CameraHeight = 1;
     public float CameraDistance = 2.5f;
     public float CameraMinDistance = 0.2f;
     public float CameraHorizontalOffset = 1;
-    public float CameraViewDistance = 1;
+    public float CameraFOV = 60;
     public bool HoverRight = true;
     public LayerMask CameraMask;
+
+    [Header("Running")]
+    public float RunCameraDistance = 3.25f;
+    public float RunCamHorizontalOffset = 0;
+    public float RunningFOV = 80;
+
+    [Header("Aiming")]
+    public float HorizontalAimSensitivity = 1.5f;
+    public float VerticalAimSensitivity = 0.05f;
+    public float AimCameraDistance = 1.5f;
+    public float AimingFOV = 40;
 
     [Header("Private References (Auto-Filled)")]
     [SerializeField] private Rigidbody _rigidbody;
     [SerializeField] private GameObject _playerCamera;
 
+    [Header("Current Stat Transition Speed")]
+    //How fast the transitions are
+    public float RadiusStep = 0.7f;
+    public float HorOffsetStep = 0.3f;
+    public float FOVStep = 0.7f;
+    public float SpeedStep = 0.5f;
+
+    //Variables that don't need to be touched in the Inspector
+    [HideInInspector] public float CurrentCameraRadius;
+    [HideInInspector] public float CurrentHorizontalOffset;
+    [HideInInspector] public float CurrentFOV;
 
     #region Properties
+    public bool CheckIfGrounded {
+        get {
+            var colliderBase = transform.position - new Vector3(0, (GetComponent<CapsuleCollider>().height / 2) - 0.05f, 0);
+            Ray ray = new Ray(colliderBase, Vector3.down);
+            Debug.DrawRay(ray.origin, ray.direction, Color.red);
+            return Physics.Raycast(ray, CheckGroundRay, GroundMask);
+        }
+    }
+
     public Rigidbody RigidBody {
         get {
             if(_rigidbody == null)
