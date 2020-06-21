@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SettingsMenu : MainMenu
+public class SettingsMenu : Menus
 {
     public void SwitchSettings(string menu)
     {
