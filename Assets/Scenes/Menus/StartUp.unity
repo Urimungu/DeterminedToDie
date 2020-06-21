@@ -230,6 +230,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Settings
       objectReference: {fileID: 0}
+    - target: {fileID: 9155259239660368704, guid: 7eb8ca96c33f29f4e92c65c721d7b03e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7644889634055252492, guid: 7eb8ca96c33f29f4e92c65c721d7b03e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -355,6 +360,105 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 2104442975}
+    - target: {fileID: 3162176713153638232, guid: 7eb8ca96c33f29f4e92c65c721d7b03e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6385833808468717357, guid: 7eb8ca96c33f29f4e92c65c721d7b03e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3027895074947988809, guid: 7eb8ca96c33f29f4e92c65c721d7b03e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 724687655, guid: 7eb8ca96c33f29f4e92c65c721d7b03e, type: 3}
+      propertyPath: m_textAlignment
+      value: 260
+      objectReference: {fileID: 0}
+    - target: {fileID: 1589834598, guid: 7eb8ca96c33f29f4e92c65c721d7b03e, type: 3}
+      propertyPath: m_textAlignment
+      value: 260
+      objectReference: {fileID: 0}
+    - target: {fileID: 351902405, guid: 7eb8ca96c33f29f4e92c65c721d7b03e, type: 3}
+      propertyPath: m_textAlignment
+      value: 260
+      objectReference: {fileID: 0}
+    - target: {fileID: 1556685947, guid: 7eb8ca96c33f29f4e92c65c721d7b03e, type: 3}
+      propertyPath: m_textAlignment
+      value: 260
+      objectReference: {fileID: 0}
+    - target: {fileID: 623012241, guid: 7eb8ca96c33f29f4e92c65c721d7b03e, type: 3}
+      propertyPath: m_textAlignment
+      value: 260
+      objectReference: {fileID: 0}
+    - target: {fileID: 2138947834, guid: 7eb8ca96c33f29f4e92c65c721d7b03e, type: 3}
+      propertyPath: m_textAlignment
+      value: 260
+      objectReference: {fileID: 0}
+    - target: {fileID: 352656174, guid: 7eb8ca96c33f29f4e92c65c721d7b03e, type: 3}
+      propertyPath: m_textAlignment
+      value: 260
+      objectReference: {fileID: 0}
+    - target: {fileID: 360223883, guid: 7eb8ca96c33f29f4e92c65c721d7b03e, type: 3}
+      propertyPath: m_textAlignment
+      value: 260
+      objectReference: {fileID: 0}
+    - target: {fileID: 634542214, guid: 7eb8ca96c33f29f4e92c65c721d7b03e, type: 3}
+      propertyPath: m_textAlignment
+      value: 260
+      objectReference: {fileID: 0}
+    - target: {fileID: 710741117, guid: 7eb8ca96c33f29f4e92c65c721d7b03e, type: 3}
+      propertyPath: m_textAlignment
+      value: 260
+      objectReference: {fileID: 0}
+    - target: {fileID: 1788174748, guid: 7eb8ca96c33f29f4e92c65c721d7b03e, type: 3}
+      propertyPath: m_textAlignment
+      value: 260
+      objectReference: {fileID: 0}
+    - target: {fileID: 305035959, guid: 7eb8ca96c33f29f4e92c65c721d7b03e, type: 3}
+      propertyPath: m_textAlignment
+      value: 260
+      objectReference: {fileID: 0}
+    - target: {fileID: 804231911, guid: 7eb8ca96c33f29f4e92c65c721d7b03e, type: 3}
+      propertyPath: m_textAlignment
+      value: 260
+      objectReference: {fileID: 0}
+    - target: {fileID: 70860459, guid: 7eb8ca96c33f29f4e92c65c721d7b03e, type: 3}
+      propertyPath: m_textAlignment
+      value: 260
+      objectReference: {fileID: 0}
+    - target: {fileID: 542149605, guid: 7eb8ca96c33f29f4e92c65c721d7b03e, type: 3}
+      propertyPath: m_textAlignment
+      value: 260
+      objectReference: {fileID: 0}
+    - target: {fileID: 956905411, guid: 7eb8ca96c33f29f4e92c65c721d7b03e, type: 3}
+      propertyPath: m_textAlignment
+      value: 260
+      objectReference: {fileID: 0}
+    - target: {fileID: 377874716, guid: 7eb8ca96c33f29f4e92c65c721d7b03e, type: 3}
+      propertyPath: m_textAlignment
+      value: 260
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396610612, guid: 7eb8ca96c33f29f4e92c65c721d7b03e, type: 3}
+      propertyPath: m_textAlignment
+      value: 260
+      objectReference: {fileID: 0}
+    - target: {fileID: 607579323, guid: 7eb8ca96c33f29f4e92c65c721d7b03e, type: 3}
+      propertyPath: m_textAlignment
+      value: 260
+      objectReference: {fileID: 0}
+    - target: {fileID: 2104941944, guid: 7eb8ca96c33f29f4e92c65c721d7b03e, type: 3}
+      propertyPath: m_textAlignment
+      value: 260
+      objectReference: {fileID: 0}
+    - target: {fileID: 900083159, guid: 7eb8ca96c33f29f4e92c65c721d7b03e, type: 3}
+      propertyPath: m_textAlignment
+      value: 260
+      objectReference: {fileID: 0}
     - target: {fileID: 1239800689900778136, guid: 7eb8ca96c33f29f4e92c65c721d7b03e,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -859,7 +963,7 @@ PrefabInstance:
     - target: {fileID: 1113527266870078031, guid: 1f313968d2162924e96ff09070cefede,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7979480077852335848, guid: 1f313968d2162924e96ff09070cefede,
         type: 3}
