@@ -4,13 +4,9 @@ using UnityEngine;
 
 public class SettingsMenu : MainMenu
 {
-    void Start()
+    public void SwitchSettings(string menu)
     {
-        
-    }
-
-    void Update()
-    {
-        
+        for (int i = 0; i < _data.settingsMenus.Count; i++)
+            _data.settingsMenus[i].SetActive(_data.settingsMenus[i].name.Contains(menu));
     }
 }
