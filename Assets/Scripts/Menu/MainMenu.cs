@@ -2,35 +2,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(MenuData))]
 public class MainMenu : MonoBehaviour
 {
-    private MenuData data;
-    private string menu;
+    private MenuData _data;
 
     private void Start()
     {
-        data = GetComponent<MenuData>();
+        _data = GetComponent<MenuData>();
     }
 
     //changes menu
     public void ChangeMenu(string menu)
     {
-        //string btnPressed = EventSystem.current.currentSelectedGameObject.name;
-
-        for (int i = 0; i < data.menus.Count; i++)
-        {
-            if (data.menus[i].name.Contains(menu))
-            {
-                Instantiate(data.menus[i], data.canvas.transform);
-            }
-            else
-            {
-                data.menus[i].SetActive(false);
-            }
-        }
+        for (int i = 0; i < _data.menus.Count; i++)
+            _data.menus[i].SetActive(_data.menus[i].name == menu);
     }
 
     //Quits the game and closes editor
