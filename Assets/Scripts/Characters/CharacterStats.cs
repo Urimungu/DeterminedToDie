@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using UnityEditor;
+using UnityEngine;
 
 public class CharacterStats : MonoBehaviour{
 
@@ -58,10 +59,9 @@ public class CharacterStats : MonoBehaviour{
     #region Properties
     public bool CheckIfGrounded {
         get {
-            var colliderBase = transform.position - new Vector3(0, (GetComponent<CapsuleCollider>().height / 2) - 0.05f, 0);
+            var colliderBase = transform.position - new Vector3(0, (GetComponent<CapsuleCollider>().height / 2) - 0.3f, 0);
             Ray ray = new Ray(colliderBase, Vector3.down);
-            Debug.DrawRay(ray.origin, ray.direction, Color.red);
-            return Physics.Raycast(ray, CheckGroundRay, GroundMask);
+            return Physics.SphereCast(ray, 0.25f, CheckGroundRay, GroundMask);
         }
     }
 
