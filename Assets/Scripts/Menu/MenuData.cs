@@ -5,9 +5,9 @@ using System.Linq;
 
 public class MenuData : MonoBehaviour
 {
-    [Header("List of Main Menus")]
+    [Header("List of Main Menus/UI")]
     public List<GameObject> menus = new List<GameObject>();
 
-    [Header("List of Setting Menus")]
+    [Header("List of Sub Menus/UI")]
     public List<GameObject> settingsMenus = new List<GameObject>();
 }
