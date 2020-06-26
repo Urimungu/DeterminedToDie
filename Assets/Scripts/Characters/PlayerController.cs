@@ -6,6 +6,8 @@ public class PlayerController : CharacterStats {
     private void Start() {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        GameManager.Instance.HUD.UpdateHealth(CurrentHealth, MaxHealth);
     }
 
     private void Update() {
@@ -51,5 +53,14 @@ public class PlayerController : CharacterStats {
         if(Input.GetButton("Jump"))
             Movement.Jump(this);
 
+    }
+
+    /// <summary>
+    /// Deal damage to the player.
+    /// </summary>
+    /// <param name="amount">The amount of damage that the player will take.</param>
+    public void TakeDamage(float amount) {
+        CurrentHealth = Mathf.Clamp(CurrentHealth - amount, 0, MaxHealth);
+        GameManager.Instance.HUD.UpdateHealth(CurrentHealth, MaxHealth);
     }
 }

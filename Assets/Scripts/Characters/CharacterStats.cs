@@ -3,6 +3,10 @@ using UnityEngine;
 
 public class CharacterStats : MonoBehaviour{
 
+    [Header("Vitality")]
+    public float CurrentHealth = 100;
+    public float MaxHealth = 100;
+
     [Header("Stats")]
     public float CrouchingSpeed = 4;
     public float WalkingSpeed = 10;
