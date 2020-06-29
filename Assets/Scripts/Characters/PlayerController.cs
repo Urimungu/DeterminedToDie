@@ -43,10 +43,8 @@ public class PlayerController : CharacterStats {
         var lookPosition = PlayerCamera.transform.GetChild(0).position + (PlayerCamera.transform.GetChild(0).forward * CameraDistance);
         var lookPoint = lookPosition + (PlayerCamera.transform.GetChild(0).forward * 10);
 
-        Debug.DrawRay(lookPosition, PlayerCamera.transform.GetChild(0).forward * 20, Color.red);
-
         //Raycasts forward to see if it hit anything
-        if(Physics.Raycast(lookPosition, PlayerCamera.transform.GetChild(0).forward, out RaycastHit hit, 20, ShootMask)) {
+        if(Physics.Raycast(lookPosition, PlayerCamera.transform.GetChild(0).forward, out RaycastHit hit, 500, ShootMask)) {
             if(hit.collider != null) {
                 lookPoint = hit.point;
             }

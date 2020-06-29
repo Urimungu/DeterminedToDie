@@ -30,7 +30,7 @@ public class Menus : MonoBehaviour
     //Quits the game and closes editor
     public void QuitBtn()
     {
-        EditorApplication.isPlaying = false;
+        //EditorApplication.isPlaying = false;
         Application.Quit();
     }
 }

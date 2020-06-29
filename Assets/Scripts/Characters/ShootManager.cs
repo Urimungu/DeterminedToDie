@@ -1,5 +1,4 @@
-﻿using UnityEditorInternal;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class ShootManager{
 
@@ -11,18 +10,15 @@ public class ShootManager{
         //Adds the shooting inaccuracy/Spread to the gun
         var accuracy = new Vector3(Random.Range(-data.GunAccuracy, data.GunAccuracy), Random.Range(-data.GunAccuracy, data.GunAccuracy), 0);
         if(data.MoveState == CharacterStats.MovementState.Aiming) 
-            accuracy /= 3;
+            accuracy = Vector3.zero;
         var newForward = data.ShootPoint.forward + accuracy;
 
-        //Shows the bullet path
-        Debug.DrawRay(data.ShootPoint.position, newForward * 20, Color.red);
-
         //Initializes the shot point
-        var hitDistance = 20f;
+        var hitDistance = 500f;
         var hitPoint = data.ShootPoint.position + (newForward * hitDistance);
 
         //Raycasts forward to see if it hit anything
-        if(Physics.Raycast(data.ShootPoint.position, newForward, out RaycastHit hit, 20, data.ShootMask)) {
+        if(Physics.Raycast(data.ShootPoint.position, newForward, out RaycastHit hit, hitDistance, data.ShootMask)) {
             if(hit.collider != null) {
                 hitDistance = hit.distance;
                 hitPoint = hit.point;
