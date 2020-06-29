@@ -89,14 +89,7 @@ public class PlayerController : CharacterStats {
         //Shoot
         bool mousePress = AutomaticWeapon ? Input.GetMouseButton(0) : Input.GetMouseButtonDown(0);
         if(mousePress && Time.time > _shootTimer && CurrentChamberAmmo > 0) {
-            _shootTimer = Time.time + FireRate;
-            CurrentChamberAmmo--;
-            var trail = Instantiate(Resources.Load<GameObject>("FX/BulletTrail"));
-            StartCoroutine(RemoveBulletTrail(trail));
-
-            ShootManager.ShootSingle(trail, this);
-            CameraController.RecoilCamera(GunRecoil, this);
-            GameManager.Instance.HUD.UpdateAmmo(CurrentChamberAmmo, CurrentAmmo);
+            ShootMechanics();
         }
 
         //Reloads the gun
@@ -104,7 +97,29 @@ public class PlayerController : CharacterStats {
             _isRunning = true;
             StartCoroutine(ReloadGun());
         }
-        
+    }
+
+    //Controls the shooting mechanics
+    private void ShootMechanics() {
+        //Calculates the fire rate and ammo count
+        _shootTimer = Time.time + FireRate;
+        CurrentChamberAmmo--;
+
+        //Creates the asthetics of damage being taken
+        var trail = Instantiate(Resources.Load<GameObject>("FX/BulletTrail"));
+        var damageText = Instantiate(Resources.Load<GameObject>("FX/DamageMarker"));
+
+        //Calls the static scripts
+        ShootManager.ShootSingle(trail, damageText, this);
+        CameraController.RecoilCamera(GunRecoil, this);
+
+        //Removes the markers after they were created
+        StartCoroutine(RemoveBulletTrail(trail));
+        StartCoroutine(RemoveTextMarker(damageText));
+
+        //Updates the HUD if it isn't missing
+        if(GameManager.Instance != null && GameManager.Instance.HUD != null)
+            GameManager.Instance.HUD.UpdateAmmo(CurrentChamberAmmo, CurrentAmmo);
     }
 
     //Reloads the gun
@@ -113,8 +128,24 @@ public class PlayerController : CharacterStats {
         var missingAmmo = Mathf.Clamp(ChamberSize - CurrentChamberAmmo, 0, CurrentAmmo);
         CurrentChamberAmmo += missingAmmo;
         CurrentAmmo -= missingAmmo;
-        GameManager.Instance.HUD.UpdateAmmo(CurrentChamberAmmo, CurrentAmmo);
+
+        //Updates the HUD if it isn't missing
+        if(GameManager.Instance != null && GameManager.Instance.HUD != null)
+            GameManager.Instance.HUD.UpdateAmmo(CurrentChamberAmmo, CurrentAmmo);
         _isRunning = false;
+    }
+
+    IEnumerator RemoveTextMarker(GameObject marker) {
+        //Moves the text up until it is destroyed
+        for(int i = 0; i < 20; i++) {
+            yield return new WaitForSeconds(0.01f);
+            marker.transform.position += new Vector3(0, 0.1f, 0);
+            var color = marker.transform.GetChild(0).GetComponent<TextMesh>().color;
+            color.a -= 0.05f;
+            marker.transform.GetChild(0).GetComponent<TextMesh>().color = color;
+        }
+
+        Destroy(marker);
     }
 
     //Removes the bullet trail once it is spawned in
@@ -129,6 +160,9 @@ public class PlayerController : CharacterStats {
     /// <param name="amount">The amount of damage that the player will take.</param>
     public void TakeDamage(float amount) {
         CurrentHealth = Mathf.Clamp(CurrentHealth - amount, 0, MaxHealth);
-        GameManager.Instance.HUD.UpdateHealth(CurrentHealth, MaxHealth);
+
+        //Updates the HUD if it isn't missing
+        if(GameManager.Instance != null && GameManager.Instance.HUD != null)
+            GameManager.Instance.HUD.UpdateHealth(CurrentHealth, MaxHealth);
     }
 }
