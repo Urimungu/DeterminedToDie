@@ -43,10 +43,20 @@ public class CharacterStats : MonoBehaviour{
     public float VerticalAimSensitivity = 0.05f;
     public float AimCameraDistance = 1.5f;
     public float AimingFOV = 40;
+    public LayerMask ShootMask;
 
-    [Header("Private References (Auto-Filled)")]
-    [SerializeField] private Rigidbody _rigidbody;
-    [SerializeField] private GameObject _playerCamera;
+    [Header("Gun")]
+    public bool AutomaticWeapon = false;
+    public int CurrentChamberAmmo = 6;
+    public int ChamberSize = 6;
+    public int CurrentAmmo = 240;
+    public int MaxAmmo = 240;
+    public float ReloadTime = 2;
+    public float FireRate = 0.4f;
+    public float GunRecoil = 1f;
+    public float GunAccuracy = 0.3f;
+    public float BulletTrailLifeTime = 0.05f;
+    public float Damage = 30;
 
     [Header("Current Stat Transition Speed")]
     //How fast the transitions are
@@ -54,6 +64,12 @@ public class CharacterStats : MonoBehaviour{
     public float HorOffsetStep = 0.3f;
     public float FOVStep = 0.7f;
     public float SpeedStep = 0.5f;
+
+    [Header("Private References (Auto-Filled)")]
+    [SerializeField] private Rigidbody _rigidbody;
+    [SerializeField] private GameObject _playerCamera;
+    [SerializeField] private Transform _gunHolder;
+    [SerializeField] private Transform _shootPoint;
 
     //Variables that don't need to be touched in the Inspector
     [HideInInspector] public float CurrentCameraRadius;
@@ -97,6 +113,22 @@ public class CharacterStats : MonoBehaviour{
                 _playerCamera = camHolder;
             }
             return _playerCamera;
+        }
+    }
+
+    public Transform ShootPoint {
+        get {
+            if(_shootPoint == null)
+                _shootPoint = transform.Find("Gun/ShootPoint");
+            return _shootPoint;
+        }
+    }
+
+    public Transform GunHolder {
+        get {
+            if(_gunHolder == null)
+                _gunHolder = transform.Find("Gun");
+            return _gunHolder;
         }
     }
     #endregion

@@ -63,6 +63,15 @@ public class CameraController{
         stats.PlayerCamera.transform.rotation = stats.transform.rotation;
     }
 
+    /// <summary>
+    /// Adds Recoil to the camera. Making the camera slightly move up every time the function is called.
+    /// </summary>
+    /// <param name="recoil">The amount of recoild or movement the gun will have, or the camera will move.</param>
+    /// <param name="stats">The Player Controller or character that this will affect.</param>
+    public static void RecoilCamera(float recoil, PlayerController stats) {
+        TiltCamera(recoil, stats);
+    }
+
     //Checks to see if there is anything behind the camera so it doesn't clip through it
     private static void TiltCamera(float ver, PlayerController stats) {
         //Sets references

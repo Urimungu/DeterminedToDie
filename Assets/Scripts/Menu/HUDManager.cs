@@ -9,6 +9,10 @@ public class HUDManager : MonoBehaviour{
     [SerializeField] private Image _healthBackground;
     [SerializeField] private Text _healthText;
 
+    [Header("Weapons")]
+    [SerializeField] private Image _gunIcon;
+    [SerializeField] private Text _ammoCount;
+
     //Variables
     private Color _ogHPBarColor;
 
@@ -41,6 +45,21 @@ public class HUDManager : MonoBehaviour{
             return _healthText;
         }
     }
+
+    public Text AmmoCount {
+        get {
+            if(_ammoCount == null) _ammoCount = transform.Find("WeaponInfo/WeaponIcon/Text").GetComponent<Text>();
+            return _ammoCount;
+        }
+    }
+
+    public Image GunIcon {
+        get {
+            if(_gunIcon == null) _gunIcon = transform.Find("WeaponInfo/WeaponIcon").GetComponent<Image>();
+            return _gunIcon;
+        }
+    }
+
     #endregion
 
     private void Awake() {
@@ -51,6 +70,12 @@ public class HUDManager : MonoBehaviour{
 
         //Sets itself as a reference for the Game Manager
         GameManager.Instance.HUD = this;
+
+        //Updates the player health
+        if(GameManager.Instance.Player != null) {
+            UpdateHealth(GameManager.Instance.Player.CurrentHealth, GameManager.Instance.Player.MaxHealth);
+            UpdateAmmo(GameManager.Instance.Player.CurrentChamberAmmo, GameManager.Instance.Player.CurrentAmmo);
+        }
     }
 
     /// <summary>
@@ -70,6 +95,16 @@ public class HUDManager : MonoBehaviour{
 
         //Changes the color from base color to red
         _healthFill.color = (_ogHPBarColor * (amount / max)) + (Color.red * ( 1 - (amount / max)));
+    }
+
+    /// <summary>
+    /// Updates that amount of ammo that is displayed on the screen.
+    /// </summary>
+    /// <param name="chamberAmmo">The amount of bullets that the player has in the chamber, and is ready to shoot.</param>
+    /// <param name="ammoCount">The ammount of ammo they have that they can use by refilling and reloading.</param>
+    public void UpdateAmmo(int chamberAmmo, int ammoCount) {
+        //Changes the Text
+        AmmoCount.text = chamberAmmo + "/" + ammoCount;
     }
 
 }

@@ -1,13 +1,20 @@
-﻿using UnityEngine;
-using UnityEngine.Experimental.UIElements;
+﻿using System.Collections;
+using UnityEngine;
 
 public class PlayerController : CharacterStats {
 
-    private void Start() {
+    //Variables
+    private float _shootTimer;
+    private bool _isRunning;
+
+    private void Awake() {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        GameManager.Instance.HUD.UpdateHealth(CurrentHealth, MaxHealth);
+        //Sets the Game Manager Reference
+        if(GameManager.Instance == null) return;
+        GameManager.Instance.Player = this;
+
     }
 
     private void Update() {
@@ -24,9 +31,32 @@ public class PlayerController : CharacterStats {
 
             //Buttons pressing
             KeyPressing(vertical);
+
+            //Controls the Gun Movement
+            GunController();
         }
     }
 
+    //Controls the gun movement
+    private void GunController() {
+        //Position of the start of the radius
+        var lookPosition = PlayerCamera.transform.GetChild(0).position + (PlayerCamera.transform.GetChild(0).forward * CameraDistance);
+        var lookPoint = lookPosition + (PlayerCamera.transform.GetChild(0).forward * 10);
+
+        Debug.DrawRay(lookPosition, PlayerCamera.transform.GetChild(0).forward * 20, Color.red);
+
+        //Raycasts forward to see if it hit anything
+        if(Physics.Raycast(lookPosition, PlayerCamera.transform.GetChild(0).forward, out RaycastHit hit, 20, ShootMask)) {
+            if(hit.collider != null) {
+                lookPoint = hit.point;
+            }
+        }
+
+        //Looks at the camera aiming position
+        GunHolder.LookAt(lookPoint);
+    }
+
+    //The Keys that the player presses to make the player move
     private void KeyPressing(float vertical) {
         //Locking and Unlocking the Cursor
         if(Input.GetKeyDown(KeyCode.Escape)) {
@@ -53,6 +83,44 @@ public class PlayerController : CharacterStats {
         if(Input.GetButton("Jump"))
             Movement.Jump(this);
 
+        //If the player is running and cannot handle the gun
+        if(MoveState == MovementState.Running) return;
+
+        //Shoot
+        bool mousePress = AutomaticWeapon ? Input.GetMouseButton(0) : Input.GetMouseButtonDown(0);
+        if(mousePress && Time.time > _shootTimer && CurrentChamberAmmo > 0) {
+            _shootTimer = Time.time + FireRate;
+            CurrentChamberAmmo--;
+            var trail = Instantiate(Resources.Load<GameObject>("FX/BulletTrail"));
+            StartCoroutine(RemoveBulletTrail(trail));
+
+            ShootManager.ShootSingle(trail, this);
+            CameraController.RecoilCamera(GunRecoil, this);
+            GameManager.Instance.HUD.UpdateAmmo(CurrentChamberAmmo, CurrentAmmo);
+        }
+
+        //Reloads the gun
+        if(Input.GetKeyDown(KeyCode.R) && CurrentChamberAmmo < ChamberSize && CurrentAmmo > 0 && !_isRunning) {
+            _isRunning = true;
+            StartCoroutine(ReloadGun());
+        }
+        
+    }
+
+    //Reloads the gun
+    IEnumerator ReloadGun() {
+        yield return new WaitForSeconds(ReloadTime);
+        var missingAmmo = Mathf.Clamp(ChamberSize - CurrentChamberAmmo, 0, CurrentAmmo);
+        CurrentChamberAmmo += missingAmmo;
+        CurrentAmmo -= missingAmmo;
+        GameManager.Instance.HUD.UpdateAmmo(CurrentChamberAmmo, CurrentAmmo);
+        _isRunning = false;
+    }
+
+    //Removes the bullet trail once it is spawned in
+    IEnumerator RemoveBulletTrail(GameObject trail) {
+        yield return new WaitForSeconds(BulletTrailLifeTime);
+        Destroy(trail);
     }
 
     /// <summary>
