@@ -5,7 +5,8 @@ public class PlayerController : CharacterStats {
 
     //Variables
     private float _shootTimer;
-    private bool _isRunning;
+    private bool _isReloading;
+    private bool _isShooting;
 
     private void Awake() {
         Cursor.lockState = CursorLockMode.Locked;
@@ -14,6 +15,8 @@ public class PlayerController : CharacterStats {
         //Sets the Game Manager Reference
         if(GameManager.Instance == null) return;
         GameManager.Instance.Player = this;
+        Primary = GameManager.Instance.WeaponDatabase.GunCatalog[3];
+        Secondary = GameManager.Instance.WeaponDatabase.GunCatalog[0];
 
     }
 
@@ -85,52 +88,90 @@ public class PlayerController : CharacterStats {
         if(MoveState == MovementState.Running) return;
 
         //Shoot
-        bool mousePress = AutomaticWeapon ? Input.GetMouseButton(0) : Input.GetMouseButtonDown(0);
-        if(mousePress && Time.time > _shootTimer && CurrentChamberAmmo > 0) {
+        bool mousePress = Primary.AutomaticWeapon ? Input.GetMouseButton(0) : Input.GetMouseButtonDown(0);
+        if(mousePress && Time.time > _shootTimer && PrimaryChamberAmmo > 0) {
             ShootMechanics();
         }
 
         //Reloads the gun
-        if(Input.GetKeyDown(KeyCode.R) && CurrentChamberAmmo < ChamberSize && CurrentAmmo > 0 && !_isRunning) {
-            _isRunning = true;
+        if(Input.GetKeyDown(KeyCode.R) && PrimaryChamberAmmo < Primary.ChamberSize && CurrentPrimaryAmmo > 0 && !_isReloading) {
+            _isReloading = true;
             StartCoroutine(ReloadGun());
+        }
+
+        //Switches Weapon
+        if(Input.GetKeyDown(KeyCode.Tab) && !_isReloading) {
+            _shootTimer = Time.time + Secondary.StowSpeed;
+            //Switches gun
+            var tempGun = Primary;
+            Primary = Secondary;
+            Secondary = tempGun;
+
+            //Switches Ammo count
+            var tempAmmo = CurrentPrimaryAmmo;
+            var tempChamber = PrimaryChamberAmmo;
+            CurrentPrimaryAmmo = CurrentSecondaryAmmo;
+            PrimaryChamberAmmo = SecondaryChamberAmmo;
+            CurrentSecondaryAmmo = tempAmmo;
+            SecondaryChamberAmmo = tempChamber;
+
+            //Switches Display
+            if(GameManager.Instance != null && GameManager.Instance.HUD != null) {
+                GameManager.Instance.HUD.UpdatePrimaryIcon(Primary.IconPath);
+                GameManager.Instance.HUD.UpdatePrimaryAmmo(PrimaryChamberAmmo, CurrentPrimaryAmmo);
+                GameManager.Instance.HUD.UpdateSecondaryIcon(Secondary.IconPath);
+                GameManager.Instance.HUD.UpdateSecondaryAmmo(SecondaryChamberAmmo, CurrentSecondaryAmmo);
+            }
         }
     }
 
     //Controls the shooting mechanics
     private void ShootMechanics() {
         //Calculates the fire rate and ammo count
-        _shootTimer = Time.time + FireRate;
-        CurrentChamberAmmo--;
-
-        //Creates the asthetics of damage being taken
-        var trail = Instantiate(Resources.Load<GameObject>("FX/BulletTrail"));
-        var damageText = Instantiate(Resources.Load<GameObject>("FX/DamageMarker"));
+        _shootTimer = Time.time + Primary.FireRate;
+        PrimaryChamberAmmo--;
 
         //Calls the static scripts
-        ShootManager.ShootSingle(trail, damageText, this);
-        CameraController.RecoilCamera(GunRecoil, this);
+        if(!_isShooting) {
+            _isShooting = true;
+            StartCoroutine(ShootGun());
+        }
 
-        //Removes the markers after they were created
-        StartCoroutine(RemoveBulletTrail(trail));
-        StartCoroutine(RemoveTextMarker(damageText));
+        CameraController.RecoilCamera(Primary.GunRecoil, this);
 
         //Updates the HUD if it isn't missing
         if(GameManager.Instance != null && GameManager.Instance.HUD != null)
-            GameManager.Instance.HUD.UpdateAmmo(CurrentChamberAmmo, CurrentAmmo);
+            GameManager.Instance.HUD.UpdatePrimaryAmmo(PrimaryChamberAmmo, CurrentPrimaryAmmo);
+    }
+
+    IEnumerator ShootGun() {
+        for(int i = 0; i < Primary.BulletsPerShot; i++) {
+            //Creates the asthetics of damage being taken
+            var trail = Instantiate(Resources.Load<GameObject>("FX/BulletTrail"));
+            var damageText = Instantiate(Resources.Load<GameObject>("FX/DamageMarker"));
+
+            //Applies the Shots
+            ShootManager.ShootSingle(trail, damageText, this);
+            yield return new WaitForSeconds(Primary.TimePerShot);
+
+            //Removes the markers after they were created
+            StartCoroutine(RemoveBulletTrail(trail));
+            StartCoroutine(RemoveTextMarker(damageText));
+        }
+        _isShooting = false;
     }
 
     //Reloads the gun
     IEnumerator ReloadGun() {
-        yield return new WaitForSeconds(ReloadTime);
-        var missingAmmo = Mathf.Clamp(ChamberSize - CurrentChamberAmmo, 0, CurrentAmmo);
-        CurrentChamberAmmo += missingAmmo;
-        CurrentAmmo -= missingAmmo;
+        yield return new WaitForSeconds(Primary.ReloadTime);
+        var missingAmmo = Mathf.Clamp(Primary.ChamberSize - PrimaryChamberAmmo, 0, CurrentPrimaryAmmo);
+        PrimaryChamberAmmo += missingAmmo;
+        CurrentPrimaryAmmo -= missingAmmo;
 
         //Updates the HUD if it isn't missing
         if(GameManager.Instance != null && GameManager.Instance.HUD != null)
-            GameManager.Instance.HUD.UpdateAmmo(CurrentChamberAmmo, CurrentAmmo);
-        _isRunning = false;
+            GameManager.Instance.HUD.UpdatePrimaryAmmo(PrimaryChamberAmmo, CurrentPrimaryAmmo);
+        _isReloading = false;
     }
 
     IEnumerator RemoveTextMarker(GameObject marker) {
@@ -148,7 +189,7 @@ public class PlayerController : CharacterStats {
 
     //Removes the bullet trail once it is spawned in
     IEnumerator RemoveBulletTrail(GameObject trail) {
-        yield return new WaitForSeconds(BulletTrailLifeTime);
+        yield return new WaitForSeconds(Primary.BulletTrailLifeTime);
         Destroy(trail);
     }
 

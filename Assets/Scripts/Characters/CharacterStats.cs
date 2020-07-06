@@ -46,17 +46,12 @@ public class CharacterStats : MonoBehaviour{
     public LayerMask ShootMask;
 
     [Header("Gun")]
-    public bool AutomaticWeapon = false;
-    public int CurrentChamberAmmo = 6;
-    public int ChamberSize = 6;
-    public int CurrentAmmo = 240;
-    public int MaxAmmo = 240;
-    public float ReloadTime = 2;
-    public float FireRate = 0.4f;
-    public float GunRecoil = 1f;
-    public float GunAccuracy = 0.3f;
-    public float BulletTrailLifeTime = 0.05f;
-    public float Damage = 30;
+    public int PrimaryChamberAmmo = 0;
+    public int CurrentPrimaryAmmo = 0;
+    public int SecondaryChamberAmmo = 0;
+    public int CurrentSecondaryAmmo = 0;
+    public GunType Primary;
+    public GunType Secondary;
 
     [Header("Current Stat Transition Speed")]
     //How fast the transitions are

@@ -8,7 +8,7 @@ public class ShootManager{
     /// <param name="data">The variables that are needed for the player to be able to shoot properly.</param>
     public static void ShootSingle(GameObject trail, GameObject text, PlayerController data) {
         //Adds the shooting inaccuracy/Spread to the gun
-        var accuracy = new Vector3(Random.Range(-data.GunAccuracy, data.GunAccuracy), Random.Range(-data.GunAccuracy, data.GunAccuracy), 0);
+        var accuracy = new Vector3(Random.Range(-data.Primary.GunAccuracy, data.Primary.GunAccuracy), Random.Range(-data.Primary.GunAccuracy, data.Primary.GunAccuracy), 0);
         if(data.MoveState == CharacterStats.MovementState.Aiming) 
             accuracy = Vector3.zero;
         var newForward = data.ShootPoint.forward + accuracy;
@@ -25,8 +25,8 @@ public class ShootManager{
 
                 //Hits an enemy and deals damage
                 if(hit.collider.GetComponent<EnemyController>() != null) {
-                    var damage = Random.Range(data.Damage - 10, data.Damage + 10);
-                    hit.collider.GetComponent<EnemyController>().TakeDamage(damage);
+                    var damage = Random.Range(data.Primary.Damage - 10, data.Primary.Damage + 10);
+                    hit.collider.GetComponent<EnemyController>().TakeDamage(damage, data.transform);
 
                     //Sets the Damage Text
                     if(hit.collider.GetComponent<EnemyController>().CanMove) {
@@ -36,8 +36,8 @@ public class ShootManager{
 
                         //Sets the Damage Marker Color
                         var color = Color.yellow;
-                        if(damage < data.Damage - 5) color = Color.red;
-                        else if(damage < data.Damage + 5) color = Color.white;
+                        if(damage < data.Primary.Damage - 5) color = Color.red;
+                        else if(damage < data.Primary.Damage + 5) color = Color.white;
 
                         text.transform.GetChild(0).GetComponent<TextMesh>().color = color;
                     }

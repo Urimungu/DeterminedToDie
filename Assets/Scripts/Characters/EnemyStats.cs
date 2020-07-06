@@ -12,9 +12,17 @@ public class EnemyStats : MonoBehaviour {
     public float WalkingSpeed = 10;
     public float RunningSpeed = 15;
 
+    [Header("Attacking")]
+    public float AttackingDamage = 30;
+    public float AttackRate = 0.5f;
+    public float AttackDistance = 1;
+    public float AlertTime = 5;
+
     [Header("Variables")]
     public bool CanMove = true;
     public float CheckGroundRay = 0.3f;
+    public float DetectDistance = 10;
+    public float DetectFallOfDistance = 15;
     public LayerMask GroundMask;
 
     [Header("References")]

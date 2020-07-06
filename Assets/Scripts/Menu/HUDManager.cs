@@ -10,8 +10,10 @@ public class HUDManager : MonoBehaviour{
     [SerializeField] private Text _healthText;
 
     [Header("Weapons")]
-    [SerializeField] private Image _gunIcon;
-    [SerializeField] private Text _ammoCount;
+    [SerializeField] private Image _primaryGunIcon;
+    [SerializeField] private Text _primaryAmmoCount;
+    [SerializeField] private Image _secondaryGunIcon;
+    [SerializeField] private Text _secondaryAmmoCount;
 
     //Variables
     private Color _ogHPBarColor;
@@ -46,17 +48,33 @@ public class HUDManager : MonoBehaviour{
         }
     }
 
-    public Text AmmoCount {
+    public Text PrimaryAmmoCount {
         get {
-            if(_ammoCount == null) _ammoCount = transform.Find("WeaponInfo/WeaponIcon/Text").GetComponent<Text>();
-            return _ammoCount;
+            if(_primaryAmmoCount == null) _primaryAmmoCount = transform.Find("WeaponInfo/WeaponIcon/Text").GetComponent<Text>();
+            return _primaryAmmoCount;
         }
     }
 
-    public Image GunIcon {
+    public Image PrimaryGunIcon {
         get {
-            if(_gunIcon == null) _gunIcon = transform.Find("WeaponInfo/WeaponIcon").GetComponent<Image>();
-            return _gunIcon;
+            if(_primaryGunIcon == null) _primaryGunIcon = transform.Find("WeaponInfo/WeaponIcon").GetComponent<Image>();
+            return _primaryGunIcon;
+        }
+    }
+
+    public Image SecondaryGunIcon {
+        get {
+            if(_secondaryGunIcon == null)
+                _secondaryGunIcon = transform.Find("WeaponInfo/SecondaryWeapon").GetComponent<Image>();
+            return _secondaryGunIcon;
+        }
+    }
+
+    public Text SecondaryAmmoCount {
+        get {
+            if(_secondaryAmmoCount == null)
+                _secondaryAmmoCount = transform.Find("WeaponInfo/SecondaryWeapon/Text").GetComponent<Text>();
+            return _secondaryAmmoCount;
         }
     }
 
@@ -73,8 +91,11 @@ public class HUDManager : MonoBehaviour{
 
         //Updates the player health
         if(GameManager.Instance.Player != null) {
+            UpdatePrimaryIcon(GameManager.Instance.Player.Primary.IconPath);
+            UpdateSecondaryIcon(GameManager.Instance.Player.Secondary.IconPath);
             UpdateHealth(GameManager.Instance.Player.CurrentHealth, GameManager.Instance.Player.MaxHealth);
-            UpdateAmmo(GameManager.Instance.Player.CurrentChamberAmmo, GameManager.Instance.Player.CurrentAmmo);
+            UpdatePrimaryAmmo(GameManager.Instance.Player.PrimaryChamberAmmo, GameManager.Instance.Player.CurrentPrimaryAmmo);
+            UpdateSecondaryAmmo(GameManager.Instance.Player.SecondaryChamberAmmo, GameManager.Instance.Player.CurrentSecondaryAmmo);
         }
     }
 
@@ -98,13 +119,51 @@ public class HUDManager : MonoBehaviour{
     }
 
     /// <summary>
-    /// Updates that amount of ammo that is displayed on the screen.
+    /// Updates the gun icon for the primary weapon on the UI.
+    /// </summary>
+    /// <param name="iconPath">The path in the resources that the image is at.</param>
+    public void UpdatePrimaryIcon(string iconPath) {
+        //Checks to make sure it exists first
+        if(Resources.Load<Sprite>(iconPath) != null) {
+            PrimaryGunIcon.sprite = Resources.Load<Sprite>(iconPath);
+            return;
+        }
+        //If it doesn't exist place a place holder
+        PrimaryGunIcon.sprite = Resources.Load<Sprite>("GunIcons/Missing");
+    }
+
+    /// <summary>
+    /// Updates the gun icon for the Secodnary weapon on the UI.
+    /// </summary>
+    /// <param name="iconPath">The path in the resources that the image is at.</param>
+    public void UpdateSecondaryIcon(string iconPath) {
+        //Checks to make sure it exists first
+        if(Resources.Load<Sprite>(iconPath) != null) {
+            SecondaryGunIcon.sprite = Resources.Load<Sprite>(iconPath);
+            return;
+        }
+        //If it doesn't exist place a place holder
+        SecondaryGunIcon.sprite = Resources.Load<Sprite>("GunIcons/Missing");
+    }
+
+    /// <summary>
+    /// Updates that amount of ammo that is displayed on the screen for the primary weapon.
     /// </summary>
     /// <param name="chamberAmmo">The amount of bullets that the player has in the chamber, and is ready to shoot.</param>
     /// <param name="ammoCount">The ammount of ammo they have that they can use by refilling and reloading.</param>
-    public void UpdateAmmo(int chamberAmmo, int ammoCount) {
+    public void UpdatePrimaryAmmo(int chamberAmmo, int ammoCount) {
         //Changes the Text
-        AmmoCount.text = chamberAmmo + "/" + ammoCount;
+        PrimaryAmmoCount.text = chamberAmmo + "/" + ammoCount;
+    }
+
+    /// <summary>
+    /// Updates that amount of ammo that is displayed on the screen for the secondary weapon.
+    /// </summary>
+    /// <param name="chamberAmmo">The amount of bullets that the player has in the chamber, and is ready to shoot.</param>
+    /// <param name="ammoCount">The ammount of ammo they have that they can use by refilling and reloading.</param>
+    public void UpdateSecondaryAmmo(int chamberAmmo, int ammoCount) {
+        //Changes the Text
+        SecondaryAmmoCount.text = chamberAmmo + "/" + ammoCount;
     }
 
 }

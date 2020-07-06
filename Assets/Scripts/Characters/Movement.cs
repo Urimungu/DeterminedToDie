@@ -37,6 +37,24 @@ public class Movement{
     }
 
     /// <summary>
+    /// Moves the Character into the position that has been indicated.
+    /// </summary>
+    /// <param name="movePos">The target position that the character will move towards.</param>
+    /// <param name="stats">The stats needed to plug in the missing variables of movement speed and stuff.</param>
+    public static void Move(Vector3 movePos, EnemyController stats) {
+        //Determines the direction that the character has to move towards
+        var newDir = (movePos - stats.transform.position).normalized;
+        newDir.y = stats.EnemyRigidBody.velocity.y;
+
+        //Turns the player towards the direction that they are moving
+        var lookDir = stats.transform.position + newDir;
+        stats.transform.LookAt(lookDir);
+
+        //Sets all the movement into the character
+        stats.EnemyRigidBody.velocity = newDir * stats.WalkingSpeed;
+    }
+
+    /// <summary>
     /// Controls the way the player jumps and how those dynamics work.
     /// </summary>
     /// <param name="stats">Variables needed for the movement speed, walking speed, running speed, etc.</param>
