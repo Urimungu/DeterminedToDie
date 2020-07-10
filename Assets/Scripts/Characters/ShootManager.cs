@@ -10,11 +10,11 @@ public class ShootManager{
         //Adds the shooting inaccuracy/Spread to the gun
         var accuracy = new Vector3(Random.Range(-data.Primary.GunAccuracy, data.Primary.GunAccuracy), Random.Range(-data.Primary.GunAccuracy, data.Primary.GunAccuracy), 0);
         if(data.MoveState == CharacterStats.MovementState.Aiming) 
-            accuracy = Vector3.zero;
+            accuracy /= 3;
         var newForward = data.ShootPoint.forward + accuracy;
 
         //Initializes the shot point
-        var hitDistance = 500f;
+        var hitDistance = 100f;
         var hitPoint = data.ShootPoint.position + (newForward * hitDistance);
 
         //Raycasts forward to see if it hit anything

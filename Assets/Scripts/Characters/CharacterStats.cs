@@ -81,50 +81,35 @@ public class CharacterStats : MonoBehaviour{
     }
 
     public Rigidbody RigidBody {
-        get {
-            if(_rigidbody == null)
-                _rigidbody = GetComponent<Rigidbody>();
-            return _rigidbody;
-        }
+        get => _rigidbody != null ? _rigidbody : _rigidbody = GetComponent<Rigidbody>();
     }
 
     public GameObject PlayerCamera {
-        get {
-            //Builds the Third-Person Camera Controller if there isn't one
-            if(_playerCamera == null) {
-                //Creates Game Objects
-                GameObject camHolder = new GameObject("CameraHolder");
-                GameObject cam = new GameObject("Camera");
-
-                //Creates the Camera Components
-                cam.AddComponent<Camera>();
-                cam.AddComponent<AudioListener>();
-
-                //Sets reference parent and sets to zero
-                cam.transform.parent = camHolder.transform;
-                cam.transform.position = new Vector3(0, 0, -2);
-
-                //Sets the reference
-                _playerCamera = camHolder;
-            }
-            return _playerCamera;
-        }
+        get => _playerCamera != null ? _playerCamera : ( _playerCamera = CreateCamera());
     }
 
     public Transform ShootPoint {
-        get {
-            if(_shootPoint == null)
-                _shootPoint = transform.Find("Gun/ShootPoint");
-            return _shootPoint;
-        }
+        get => _shootPoint != null ? _shootPoint : (_shootPoint = transform.Find("Gun/ShootPoint"));
     }
 
     public Transform GunHolder {
-        get {
-            if(_gunHolder == null)
-                _gunHolder = transform.Find("Gun");
-            return _gunHolder;
-        }
+        get => _gunHolder != null ? _gunHolder : (_gunHolder = transform.Find("Gun"));
     }
     #endregion
+
+    private GameObject CreateCamera() {
+        //Creates Game Objects
+        GameObject camHolder = new GameObject("CameraHolder");
+        GameObject cam = new GameObject("Camera");
+
+        //Creates the Camera Components
+        cam.AddComponent<Camera>();
+        cam.AddComponent<AudioListener>();
+
+        //Sets reference parent and sets to zero
+        cam.transform.parent = camHolder.transform;
+        cam.transform.position = new Vector3(0, 0, -2);
+
+        return camHolder;
+    }
 }

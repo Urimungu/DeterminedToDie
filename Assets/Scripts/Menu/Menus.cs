@@ -1,17 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEditor;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(MenuData))]
-public class Menus : MonoBehaviour
-{
+public class Menus : MonoBehaviour{
     protected MenuData _data;
 
     private void Start()
     {
         _data = GetComponent<MenuData>();
+        ChangeMenu("StartScreen");
     }
 
     //Changes Menu

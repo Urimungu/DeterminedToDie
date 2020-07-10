@@ -15,8 +15,12 @@ public class PlayerController : CharacterStats {
         //Sets the Game Manager Reference
         if(GameManager.Instance == null) return;
         GameManager.Instance.Player = this;
-        Primary = GameManager.Instance.WeaponDatabase.GunCatalog[3];
-        Secondary = GameManager.Instance.WeaponDatabase.GunCatalog[0];
+
+        //Fills up Ammo
+        Primary = GameManager.Instance.WeaponDatabase.GunCatalog[1];
+        PrimaryChamberAmmo = Primary.ChamberSize;
+        Secondary = GameManager.Instance.WeaponDatabase.GunCatalog[2];
+        SecondaryChamberAmmo = Secondary.ChamberSize;
 
     }
 

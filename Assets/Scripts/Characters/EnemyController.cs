@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Linq;
 using UnityEngine;
 
 public class EnemyController : EnemyStats {
@@ -67,7 +68,7 @@ public class EnemyController : EnemyStats {
     private bool DetectPlayer() {
         //Gets a list of all the colliders around the enemy
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, DetectDistance);
-
+        
         //Checks to see which player is closer
         foreach(Collider collider in hitColliders) {
             if(collider.GetComponent<PlayerController>() != null)
