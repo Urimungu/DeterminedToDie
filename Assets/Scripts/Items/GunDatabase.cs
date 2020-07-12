@@ -10,7 +10,7 @@ public class GunDatabase : MonoBehaviour{
         int id = 0;
 
         //Pistols
-        GunCatalog.Add(new GunType("M1911", "It's a simple pistol", id, false, 12, 120, 0.3f, 1, 0.4f, 0.3f, 0.02f, 0.05f, 15, 1, 0, "GunIcons/Pistol"));
+        GunCatalog.Add(new GunType("M1911", "It's a simple pistol", id, false, 12, 120, 0.3f, 1, 0.4f, 0.3f, 0.02f, 0.01f, 15, 1, 0, "GunIcons/Pistol"));
 
         //ShotGuns
         GunCatalog.Add(new GunType("Mossberg", "It's a ShotGun", ++id, false, 2, 60, 0.9f, 2, 1, 0.8f, 0.05f, 0.1f, 10, 5, 0, "GunIcons/ShotGun"));

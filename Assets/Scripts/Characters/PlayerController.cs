@@ -17,9 +17,9 @@ public class PlayerController : CharacterStats {
         GameManager.Instance.Player = this;
 
         //Fills up Ammo
-        Primary = GameManager.Instance.WeaponDatabase.GunCatalog[1];
+        Primary = GameManager.Instance.WeaponDatabase.GunCatalog[3];
         PrimaryChamberAmmo = Primary.ChamberSize;
-        Secondary = GameManager.Instance.WeaponDatabase.GunCatalog[2];
+        Secondary = GameManager.Instance.WeaponDatabase.GunCatalog[0];
         SecondaryChamberAmmo = Secondary.ChamberSize;
 
     }
@@ -155,11 +155,25 @@ public class PlayerController : CharacterStats {
             var damageText = Instantiate(Resources.Load<GameObject>("FX/DamageMarker"));
 
             //Applies the Shots
-            ShootManager.ShootSingle(trail, damageText, this);
+            RaycastHit hit = ShootManager.ShootSingle(trail, damageText, this);
             yield return new WaitForSeconds(Primary.TimePerShot);
 
+            if (hit.collider != null) {
+                //Sets the Sparks
+                string bloodOrSparks = hit.collider.GetComponent<EnemyController>() != null ? "FX/Blood" : "FX/Sparks";
+
+                //Sets the position of Sparks
+                var effects = Instantiate(Resources.Load<GameObject>(bloodOrSparks));
+                effects.transform.position = hit.point;
+                effects.transform.rotation = Quaternion.FromToRotation(Vector3.forward, hit.normal);
+                effects.GetComponent<ParticleSystem>().Play();
+
+                //Removes sparks
+                StartCoroutine(RemoveBulletTrail(effects, 0.25f));
+            }
+
             //Removes the markers after they were created
-            StartCoroutine(RemoveBulletTrail(trail));
+            StartCoroutine(RemoveBulletTrail(trail, Primary.BulletTrailLifeTime));
             StartCoroutine(RemoveTextMarker(damageText));
         }
         _isShooting = false;
@@ -192,8 +206,8 @@ public class PlayerController : CharacterStats {
     }
 
     //Removes the bullet trail once it is spawned in
-    IEnumerator RemoveBulletTrail(GameObject trail) {
-        yield return new WaitForSeconds(Primary.BulletTrailLifeTime);
+    IEnumerator RemoveBulletTrail(GameObject trail, float timer) {
+        yield return new WaitForSeconds(timer);
         Destroy(trail);
     }
 

@@ -6,8 +6,9 @@ public class ShootManager{
     /// Shoots for single types of shots like pistols, rifles, or snipers.
     /// </summary>
     /// <param name="data">The variables that are needed for the player to be able to shoot properly.</param>
-    public static void ShootSingle(GameObject trail, GameObject text, PlayerController data) {
+    public static RaycastHit ShootSingle(GameObject trail, GameObject text, PlayerController data) {
         //Adds the shooting inaccuracy/Spread to the gun
+        RaycastHit hit;
         var accuracy = new Vector3(Random.Range(-data.Primary.GunAccuracy, data.Primary.GunAccuracy), Random.Range(-data.Primary.GunAccuracy, data.Primary.GunAccuracy), 0);
         if(data.MoveState == CharacterStats.MovementState.Aiming) 
             accuracy /= 3;
@@ -18,7 +19,7 @@ public class ShootManager{
         var hitPoint = data.ShootPoint.position + (newForward * hitDistance);
 
         //Raycasts forward to see if it hit anything
-        if(Physics.Raycast(data.ShootPoint.position, newForward, out RaycastHit hit, hitDistance, data.ShootMask)) {
+        if(Physics.Raycast(data.ShootPoint.position, newForward, out hit, hitDistance, data.ShootMask)) {
             if(hit.collider != null) {
                 hitDistance = hit.distance;
                 hitPoint = hit.point;
@@ -49,5 +50,7 @@ public class ShootManager{
         trail.transform.position = data.ShootPoint.position + (newForward * (hitDistance / 2));
         trail.transform.LookAt(hitPoint);
         trail.transform.localScale = new Vector3(1, 1, hitDistance * 4);
+
+        return hit;
     }
 }

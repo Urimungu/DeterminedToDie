@@ -910,6 +910,26 @@ PrefabInstance:
       propertyPath: CurrentPrimaryAmmo
       value: 200
       objectReference: {fileID: 0}
+    - target: {fileID: 2037035746861080218, guid: c4465e404c2444c428d46d1c0f04149d,
+        type: 3}
+      propertyPath: RunningSpeed
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 2037035746861080218, guid: c4465e404c2444c428d46d1c0f04149d,
+        type: 3}
+      propertyPath: WalkingSpeed
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2037035746861080218, guid: c4465e404c2444c428d46d1c0f04149d,
+        type: 3}
+      propertyPath: AirSpeed
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2037035746861080218, guid: c4465e404c2444c428d46d1c0f04149d,
+        type: 3}
+      propertyPath: JumpForce
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c4465e404c2444c428d46d1c0f04149d, type: 3}
 --- !u!1001 &3818078916731121302
