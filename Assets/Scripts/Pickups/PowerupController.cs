@@ -27,7 +27,7 @@ public class PowerupController : MonoBehaviour
 
         foreach (Powerups expPower in expired)
         {
-            expPower.OnDeactivate(data);
+            //expPower.OnDeactivate(data);
             powerups.Remove(expPower);
         }
 
@@ -37,7 +37,7 @@ public class PowerupController : MonoBehaviour
     //Adds powerups, only tracks temp
     public void AddPowerup(Powerups power)
     {
-        power.OnActivate(data);
+        //power.OnActivate(data);
 
         if (!power.isPerm)
             powerups.Add(power);
