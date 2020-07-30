@@ -4,8 +4,12 @@
 public class GameManager : Singleton<GameManager>{
 
     [Header("References")]
-    public CharacterStats Player;
-    public HUDManager HUD;
+    public CharacterFunctions Player;
+    public HUDController HUD;
     public GunDatabase WeaponDatabase { get { return GetComponent<GunDatabase>(); } }
+    public LevelFunctions CurrentLevel;
+
+    [Header("Stats")]
+    public int ZombiesKilled = 0;
 
 }

@@ -10,7 +10,7 @@ public class CameraController{
     /// <param name="hor">Input needed to move the Camera left and right.</param>
     /// <param name="ver">Input needed to move the Camera up and down.</param>
     /// <param name="stats">Gets the Camera variables, such as height, distance, sensitivity, etc.</param>
-    public static void FollowPlayer(float hor, float ver, PlayerController stats) {
+    public static void FollowPlayer(float hor, float ver, CharacterFunctions stats) {
         //Moves Camera
         RotateCamera(hor, stats);
         TiltCamera(ver, stats);
@@ -30,7 +30,7 @@ public class CameraController{
     }
 
     //Positions the camera in the right place
-    private static void CameraPositioning(PlayerController stats) {
+    private static void CameraPositioning(CharacterFunctions stats) {
         //Addes Horizontal offset
         var direction = stats.HoverRight ? 1 : -1;
         var newPos = stats.transform.position;
@@ -56,7 +56,7 @@ public class CameraController{
     }
 
     //Rotates the player left and right
-    private static void RotateCamera(float hor, PlayerController stats) {
+    private static void RotateCamera(float hor, CharacterFunctions stats) {
         //Depends if the player is aiming down the sights
         var horizontalSensitivity = stats.MoveState == CharacterStats.MovementState.Aiming ? stats.HorizontalAimSensitivity : stats.HorizontalSensitivity;
 
@@ -70,12 +70,12 @@ public class CameraController{
     /// </summary>
     /// <param name="recoil">The amount of recoild or movement the gun will have, or the camera will move.</param>
     /// <param name="stats">The Player Controller or character that this will affect.</param>
-    public static void RecoilCamera(float recoil, PlayerController stats) {
+    public static void RecoilCamera(float recoil, CharacterFunctions stats) {
         TiltCamera(recoil, stats);
     }
 
     //Checks to see if there is anything behind the camera so it doesn't clip through it
-    private static void TiltCamera(float ver, PlayerController stats) {
+    private static void TiltCamera(float ver, CharacterFunctions stats) {
         //Sets references
         var cam = stats.PlayerCamera.transform.Find("Camera");
         Vector3 newPos = cam.transform.localPosition;

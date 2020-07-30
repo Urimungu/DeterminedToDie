@@ -1,5 +1,4 @@
 ﻿using System;
-using UnityEngine;
 
 [Serializable]
 public class GunType{
@@ -13,6 +12,8 @@ public class GunType{
 
     public int ChamberSize;
     public int MaxAmmo;
+    public int ChamberAmmo;
+    public int TotalAmmo;
     public float StowSpeed;
 
     public float ReloadTime;
@@ -20,12 +21,14 @@ public class GunType{
     public float GunRecoil;
     public float GunAccuracy;
     public float BulletTrailLifeTime;
+    public float Range;
     public float Damage;
     public float BulletsPerShot;
     public float TimePerShot;
 
     public string IconPath;
-    public string ModelPath;    //the path that will be used for the gun
+    public string ModelPath;
+    public string CrossHair;
 
     /// <summary>
     /// Initializes the gun as an empty object.
@@ -51,7 +54,7 @@ public class GunType{
     /// <param name="bullets">The amount of bullets per shot. (Mostly used for shotguns or pulse rifles) </param>
     /// <param name="shotTime">The amount of time between each shot in the shot. (Mainly used for pulse rifles)</param>
     /// <param name="icon">The path in the resource folder for the gun display.</param>
-    public GunType(string name, string desc, int id, bool auto, int chamber, int maxAmmo, float stow, float reload, float rate, float recoil, float acc, float trailLifeTime, float damage, float bullets, float shotTime, string icon) {
+    public GunType(string name, string desc, int id, bool auto, int chamber, int maxAmmo, int chamberAmmo, int totalAmmo, float stow, float reload, float rate, float recoil, float acc, float trailLifeTime, float range, float damage, float bullets, float shotTime, string icon, string model, string xhair) {
         Name = name;
         Description = desc;
         ID = id;
@@ -60,6 +63,8 @@ public class GunType{
 
         ChamberSize = chamber;
         MaxAmmo = maxAmmo;
+        ChamberAmmo = chamberAmmo;
+        TotalAmmo = totalAmmo;
         StowSpeed = stow;
 
         ReloadTime = reload;
@@ -67,10 +72,13 @@ public class GunType{
         GunRecoil = recoil;
         GunAccuracy = acc;
         BulletTrailLifeTime = trailLifeTime;
+        Range = range;
         Damage = damage;
         BulletsPerShot = bullets;
         TimePerShot = shotTime;
 
         IconPath = icon;
+        ModelPath = model;
+        CrossHair = xhair;
     }
 }

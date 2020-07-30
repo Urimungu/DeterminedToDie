@@ -1,176 +1,86 @@
-﻿using System.Collections;
-using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class EnemyController : EnemyStats {
+public class EnemyController : EnemyFunctions {
 
     //Variables
-    private bool _isRunning;
     private float _attackTimer;
-    private float _alertTimer;
-    private Material _prevMat;
-    public Material PrevMat {
-        get {
-            if(_prevMat == null)
-                _prevMat = transform.GetChild(0).GetComponent<MeshRenderer>().material;
-            return _prevMat;
-        }
-        set {
-            _prevMat = transform.GetChild(0).GetComponent<MeshRenderer>().material;
-        }
+    private bool _attacked;
 
-    }
-    public enum State { Patrolling, Chasing }
-
-    [Header("Variables")]
-    [SerializeField] private State _state;
-    [SerializeField] private Transform _target;
-    public Transform Target {
-        get {
-            //Sets the enemy for patrolling if there is no enemy
-            if(_target == null) 
-                _state = State.Patrolling;
-            return _target;
-        }
-        set {
-            //Sets the Enemy to follow the state
-            if(value != null) 
-                _state = State.Chasing;
-            
-            _target = value;
-        }
-    }
     private void Start() {
         PrevMat = null;
     }
 
-    private void FixedUpdate() {
-        if(CanMove) 
+    private void Update() {
+        if (CanMove){
             StateMachine();
-        
+            UpdateAnimations();
+        }
     }
 
     //Controls the Enemy
     private void StateMachine() {
-        switch(_state) {
-            case State.Patrolling:  Patrol();   break;
-            case State.Chasing:     Chase();    break;
+        switch(_currentState) {
+            case State.Patrol:  
+                Patrol();   
+                break;
+            case State.Chase:     
+                Chase();    
+                break;
+
+            //If it's set to nothing or it doesn't fit the requirements it does nothing
+            case State.Nothing:
+            default:
+                break;
         }
     }
 
     //Patrols in an area
     private void Patrol() {
         //Patrols
-        DetectPlayer();
-    }
-
-    //Detects if the player is inrange of the enemy
-    private bool DetectPlayer() {
-        //Gets a list of all the colliders around the enemy
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, DetectDistance);
+        if (DetectPlayer()) 
+            CurrentState = State.Chase;
         
-        //Checks to see which player is closer
-        foreach(Collider collider in hitColliders) {
-            if(collider.GetComponent<PlayerController>() != null)
-                Target = collider.transform;   
-        }
-
-        return false;
     }
 
     //Chases whatever it has found
     private void Chase() {
         //Makes sure that the target isn't equal to null
-        if(Target == null) {
-            _state = State.Patrolling;
+        if (Target == null) {
+            CurrentState = State.Patrol;
             return;
         }
 
         //Returns if the enemy already attacked
-        if(Time.time <= _attackTimer) return;
-
-        //Moves the enemy towards the player
-        var newPos = Target.position;
-        Movement.Move(newPos, this);
+        if (Time.time <= _attackTimer) {
+            var animation = Anim.GetCurrentAnimatorStateInfo(0);
+            if (animation.IsName("Attack") && animation.normalizedTime > 0.35f && animation.normalizedTime < 0.5f && !_attacked) {
+                _attacked = true;
+                Attack();
+            }
+            return;
+        }
 
         //Stops chasing the enemy
         var dist = (Target.position - transform.position).magnitude;
-        if(dist < DetectFallOfDistance && Time.time > _alertTimer)
+        if (dist > DetectFallOfDistance && Time.time > _alertTimer){
             Target = null;
+            return;
+        }else
+            _alertTimer = Time.time + AlertTime;
 
         //Attacks the enemy
-        if(dist < AttackDistance) {
+        if (dist < AttackDistance){
             _attackTimer = Time.time + AttackRate;
-            Attack();
+            Anim.SetTrigger("Attack");
+            _attacked = false;
+        }else{
+            var newPos = Target.position;
+            Agent.SetDestination(newPos);
         }
     }
 
-    //Attacks whomever it's targeted on
-    private void Attack() {
-        //Calculates the Attack Logic
-        var center = transform.position + (transform.forward * AttackDistance);
-        var size = new Vector3(1, 1, 1);
-
-        Collider[] damageTakers = Physics.OverlapBox(center, size);
-
-        //Applies the damage to the players in the attack radius
-        foreach(Collider col in damageTakers) {
-            if(col.transform.GetComponent<PlayerController>() != null)
-                col.transform.GetComponent<PlayerController>().TakeDamage(AttackingDamage);
-        }
-    }
-
-    public void TakeDamage(float damage, Transform shooter = null) {
-        //Alerts the Enemy
-        if(shooter != null) {
-            _alertTimer = Time.time + AlertTime;
-            Target = shooter; 
-        }
-
-        //If the player can't move then it can't take damage
-        if(!CanMove) return;
-
-        CurrentHealth -= damage;
-
-        //Shows Damage Marker
-        if(!_isRunning) {
-            _isRunning = true;
-            StartCoroutine(TakeDamage());
-        }
-
-        //Player Dies
-        if(CurrentHealth <= 0) {
-            Death();
-        }
-    }
-
-    //The enemy dies
-    private void Death() {
-        CanMove = false;
-        EnemyRigidBody.constraints = RigidbodyConstraints.None;
-        StartCoroutine(KillEnemy());
-
-        //Initializes the Enemy falling backwards
-        var direction = -Vector3.forward * 2;
-
-        //Knocks the Enemy Over away from the player if there is one
-        if(GameManager.Instance != null && GameManager.Instance.Player != null) 
-            direction = (GameManager.Instance.Player.transform.position - transform.position).normalized;
-        
-        //Applies the Force
-        EnemyRigidBody.AddForce(-direction * 5, ForceMode.Impulse);
-    }
-
-    IEnumerator KillEnemy() {
-        yield return new WaitForSeconds(5);
-        Destroy(gameObject);
-    }
-
-    //Aesthetics of taking damage
-    IEnumerator TakeDamage() {
-        transform.GetChild(0).GetComponent<MeshRenderer>().material = DamageMaterial;
-        yield return new WaitForSeconds(0.1f);
-        transform.GetChild(0).GetComponent<MeshRenderer>().material = PrevMat;
-        _isRunning = false;
+    //Updates the Enemy Animations
+    private void UpdateAnimations() {
+        Anim.SetFloat("Speed", (new Vector3(Agent.velocity.x, 0, Agent.velocity.z)).magnitude);
     }
 }

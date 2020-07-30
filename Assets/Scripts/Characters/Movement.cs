@@ -14,44 +14,16 @@ public class Movement{
         var moveRight = stats.transform.right * hor;
 
         if(!stats.CheckIfGrounded) {
-            stats.RigidBody.AddForce((moveForward + moveRight).normalized * stats.AirSpeed * 100);
+            stats.PlayerRigidbody.AddForce((moveForward + moveRight).normalized * stats.AirSpeed * 100);
             return;
         }
 
-        //Chooses what speed the player moves in
-        float tempSpeed = 0;
-        switch(stats.MoveState) {
-            //Aiming, Walking, Running, Crouching Speeds
-            case CharacterStats.MovementState.Aiming:    tempSpeed = stats.AimingWalkSpeed;break;
-            case CharacterStats.MovementState.Walking:   tempSpeed = stats.WalkingSpeed;   break;
-            case CharacterStats.MovementState.Running:   tempSpeed = stats.RunningSpeed;   break;
-            case CharacterStats.MovementState.Crouching: tempSpeed = stats.CrouchingSpeed; break;
-        }
-
         //Removes Diagnol speed gain and adds back in it's vertical velocity
-        Vector3 newMovement = (moveForward + moveRight).normalized * tempSpeed;
-        newMovement.y = stats.RigidBody.velocity.y;
+        Vector3 newMovement = (moveForward + moveRight).normalized * stats.CurrentMovementSpeed;
+        newMovement.y = stats.PlayerRigidbody.velocity.y;
 
         //Sends the Rigidbody the movement
-        stats.RigidBody.velocity = newMovement;
-    }
-
-    /// <summary>
-    /// Moves the Character into the position that has been indicated.
-    /// </summary>
-    /// <param name="movePos">The target position that the character will move towards.</param>
-    /// <param name="stats">The stats needed to plug in the missing variables of movement speed and stuff.</param>
-    public static void Move(Vector3 movePos, EnemyController stats) {
-        //Determines the direction that the character has to move towards
-        var newDir = (movePos - stats.transform.position).normalized;
-        newDir.y = stats.EnemyRigidBody.velocity.y;
-
-        //Turns the player towards the direction that they are moving
-        var lookDir = stats.transform.position + newDir;
-        stats.transform.LookAt(lookDir);
-
-        //Sets all the movement into the character
-        stats.EnemyRigidBody.velocity = newDir * stats.WalkingSpeed;
+        stats.PlayerRigidbody.velocity = newMovement;
     }
 
     /// <summary>
@@ -63,9 +35,9 @@ public class Movement{
         if(!stats.CheckIfGrounded) return;
 
         //Makes the player jump
-        var preVel = stats.RigidBody.velocity;
+        var preVel = stats.PlayerRigidbody.velocity;
         preVel.y += stats.JumpForce;
-        stats.RigidBody.velocity = preVel;
+        stats.PlayerRigidbody.velocity = preVel;
         
     }
 }

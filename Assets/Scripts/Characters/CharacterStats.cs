@@ -1,115 +1,76 @@
-﻿using UnityEditor;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class CharacterStats : MonoBehaviour{
 
     [Header("Vitality")]
-    public float CurrentHealth = 100;
-    public float MaxHealth = 100;
+    [SerializeField] protected float _currentHealth = 100;
+    [SerializeField] protected float _maxHealth = 100;
 
     [Header("Stats")]
-    public float CrouchingSpeed = 4;
-    public float WalkingSpeed = 10;
-    public float RunningSpeed = 15;
-    public float AimingWalkSpeed = 6;
-    public float AirSpeed = 3;
-    public float JumpForce = 3;
-    public enum MovementState { Walking, Running, Crouching, Aiming};
-    public MovementState MoveState;
+    [SerializeField] protected float _crouchingSpeed = 4;
+    [SerializeField] protected float _walkingSpeed = 10;
+    [SerializeField] protected float _runningSpeed = 15;
+    [SerializeField] protected float _aimingWalkSpeed = 6;
+    [SerializeField] protected float _airSpeed = 3;
+    [SerializeField] protected float _jumpForce = 3;
+    [SerializeField] protected MovementState _moveState;
 
     [Header("Variables")]
-    public bool CanMove = true;
-    public float CheckGroundRay = 0.3f;
-    public LayerMask GroundMask;
+    [SerializeField] protected bool _canRecieveInput = true;
+    [SerializeField] protected bool _canMove = true;
+    [SerializeField] protected float _checkGroundRay = 0.3f;
+    [SerializeField] protected LayerMask _groundMask;
 
     [Header("Camera Options")]
-    public float HorizontalSensitivity = 3;
-    public float VerticalSensitivity = 0.2f;
-    public float CameraHeight = 1;
-    public float CameraDistance = 2.5f;
-    public float CameraMinDistance = 0.2f;
-    public float CameraHorizontalOffset = 1;
-    public float CameraFOV = 60;
-    public bool HoverRight = true;
-    public LayerMask CameraMask;
+    [SerializeField] protected bool _canLook = true;
+    [SerializeField] protected float _horizontalSensitivity = 3;
+    [SerializeField] protected float _verticalSensitivity = 0.2f;
+    [SerializeField] protected float _cameraHeight = 1;
+    [SerializeField] protected float _cameraDistance = 2.5f;
+    [SerializeField] protected float _cameraMinDistance = 0.2f;
+    [SerializeField] protected float _cameraHorizontalOffset = 1;
+    [SerializeField] protected float _cameraFOV = 60;
+    [SerializeField] protected bool _hoverRight = true;
+    [SerializeField] protected LayerMask _cameraMask;
 
     [Header("Running")]
-    public float RunCameraDistance = 3.25f;
-    public float RunCamHorizontalOffset = 0;
-    public float RunningFOV = 80;
+    [SerializeField] protected float _runCameraDistance = 3.25f;
+    [SerializeField] protected float _runCamHorizontalOffset = 0;
+    [SerializeField] protected float _runningFOV = 80;
 
     [Header("Aiming")]
-    public float HorizontalAimSensitivity = 1.5f;
-    public float VerticalAimSensitivity = 0.05f;
-    public float AimCameraDistance = 1.5f;
-    public float AimingFOV = 40;
-    public LayerMask ShootMask;
+    [SerializeField] protected float _horizontalAimSensitivity = 1.5f;
+    [SerializeField] protected float _verticalAimSensitivity = 0.05f;
+    [SerializeField] protected float _aimCameraDistance = 1.5f;
+    [SerializeField] protected float _aimingFOV = 40;
+    [SerializeField] protected LayerMask _shootMask;
 
     [Header("Gun")]
-    public int PrimaryChamberAmmo = 0;
-    public int CurrentPrimaryAmmo = 0;
-    public int SecondaryChamberAmmo = 0;
-    public int CurrentSecondaryAmmo = 0;
-    public GunType Primary;
-    public GunType Secondary;
+    [SerializeField] protected bool _canShoot = true;
+    [SerializeField] protected GunType _primary;
+    [SerializeField] protected GunType _secondary;
+    [SerializeField] protected Transform _weaponHandle;
 
-    [Header("Current Stat Transition Speed")]
-    //How fast the transitions are
-    public float RadiusStep = 0.7f;
-    public float HorOffsetStep = 0.3f;
-    public float FOVStep = 0.7f;
-    public float SpeedStep = 0.5f;
+    [Header("Dynamic Variables")]
+    [SerializeField] protected float _currentMovementSpeed = 10;
+    [SerializeField] protected float _radiusStep = 0.7f;
+    [SerializeField] protected float _horOffsetStep = 0.3f;
+    [SerializeField] protected float _fovStep = 0.7f;
+    [SerializeField] protected float _speedStep = 0.5f;
 
-    [Header("Private References (Auto-Filled)")]
-    [SerializeField] private Rigidbody _rigidbody;
-    [SerializeField] private GameObject _playerCamera;
-    [SerializeField] private Transform _gunHolder;
-    [SerializeField] private Transform _shootPoint;
+    [HideInInspector] protected float _currentCameraRadius;
+    [HideInInspector] protected float _currentHorizontalOffset;
+    [HideInInspector] protected float _currentFOV;
 
-    //Variables that don't need to be touched in the Inspector
-    [HideInInspector] public float CurrentCameraRadius;
-    [HideInInspector] public float CurrentHorizontalOffset;
-    [HideInInspector] public float CurrentFOV;
+    [Header("References")]
+    [SerializeField] protected Rigidbody _rigidbody;
+    [SerializeField] protected GameObject _playerCamera;
+    [SerializeField] protected GameObject _corpse;
+    [SerializeField] protected Animator _anim;
+    [SerializeField] protected Transform _gunHolder;
+    [SerializeField] protected Transform _shootPoint;
 
-    #region Properties
-    public bool CheckIfGrounded {
-        get {
-            var colliderBase = transform.position - new Vector3(0, (GetComponent<CapsuleCollider>().height / 2) - 0.3f, 0);
-            Ray ray = new Ray(colliderBase, Vector3.down);
-            return Physics.SphereCast(ray, 0.25f, CheckGroundRay, GroundMask);
-        }
-    }
 
-    public Rigidbody RigidBody {
-        get => _rigidbody != null ? _rigidbody : _rigidbody = GetComponent<Rigidbody>();
-    }
-
-    public GameObject PlayerCamera {
-        get => _playerCamera != null ? _playerCamera : ( _playerCamera = CreateCamera());
-    }
-
-    public Transform ShootPoint {
-        get => _shootPoint != null ? _shootPoint : (_shootPoint = transform.Find("Gun/ShootPoint"));
-    }
-
-    public Transform GunHolder {
-        get => _gunHolder != null ? _gunHolder : (_gunHolder = transform.Find("Gun"));
-    }
-    #endregion
-
-    private GameObject CreateCamera() {
-        //Creates Game Objects
-        GameObject camHolder = new GameObject("CameraHolder");
-        GameObject cam = new GameObject("Camera");
-
-        //Creates the Camera Components
-        cam.AddComponent<Camera>();
-        cam.AddComponent<AudioListener>();
-
-        //Sets reference parent and sets to zero
-        cam.transform.parent = camHolder.transform;
-        cam.transform.position = new Vector3(0, 0, -2);
-
-        return camHolder;
-    }
+    //Additional Values
+    public enum MovementState { Walking, Running, Crouching, Aiming };
 }

@@ -1,41 +1,46 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.AI;
 
 public class EnemyStats : MonoBehaviour {
 
     [Header("Health Stats")]
-    public float CurrentHealth = 100;
-    public float MaxHealth = 100;
+    [SerializeField] protected float _currentHealth = 100;
+    [SerializeField] protected float _maxHealth = 100;
+    [SerializeField] protected float _staggerChance = 0.25f;
 
     [Header("Stats")]
-    public float WalkingSpeed = 10;
-    public float RunningSpeed = 15;
+    [SerializeField] protected float _crawlSpeed = 3;
+    [SerializeField] protected float _walkingSpeed = 7;
+    [SerializeField] protected float _runningSpeed = 15;
+
+    [Header("Dynamic Variables")]
+    [SerializeField] protected float _currentSpeed = 7;
 
     [Header("Attacking")]
-    public float AttackingDamage = 30;
-    public float AttackRate = 0.5f;
-    public float AttackDistance = 1;
-    public float AlertTime = 5;
+    [SerializeField] protected float _attackingDamage = 30;
+    [SerializeField] protected float _attackRate = 0.5f;
+    [SerializeField] protected float _attackDistance = 1;
+    [SerializeField] protected float _alertTime = 5;
 
     [Header("Variables")]
-    public bool CanMove = true;
-    public float CheckGroundRay = 0.3f;
-    public float DetectDistance = 10;
-    public float DetectFallOfDistance = 15;
-    public LayerMask GroundMask;
+    [SerializeField] protected bool _canMove = true;
+    [SerializeField] protected float _checkGroundRay = 0.3f;
+    [SerializeField] protected float _detectDistance = 10;
+    [SerializeField] protected float _detectFallOfDistance = 15;
+    [SerializeField] protected LayerMask _groundMask;
+
+    [Header("Aesthetics")]
+    [SerializeField] protected Material _prevMat;
+    [SerializeField] protected Material _damagedMaterial;
+    [SerializeField] protected float _bodyDecay = 25;
 
     [Header("References")]
-    public Material DamageMaterial;
-    private Rigidbody _enemyRigidBody;
+    [SerializeField] protected Transform _target;
+    [SerializeField] protected NavMeshAgent _agent;
+    [SerializeField] protected Animator _anim;
 
-    #region Properties
-    public Rigidbody EnemyRigidBody{
-        get{
-            if(_enemyRigidBody == null)
-                _enemyRigidBody = GetComponent<Rigidbody>();
-            return _enemyRigidBody;
-        }
-    }
-    #endregion
+    [Header("StateMachine")]
+    [SerializeField] protected State _currentState;
+
+    public enum State { Nothing, Patrol, Chase, Attack, Death }
 }
