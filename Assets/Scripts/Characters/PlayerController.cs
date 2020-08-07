@@ -3,6 +3,9 @@
 public class PlayerController : CharacterFunctions {
 
     private void Awake() {
+        //Starts up the player
+        InitializePlayer();
+
         //Sets the Game Manager Reference
         if(GameManager.Instance == null) return;
         GameManager.Instance.Player = this;
@@ -16,7 +19,7 @@ public class PlayerController : CharacterFunctions {
             CameraMovement();
             GunHandeling();
         }
-        else if(!CanRecieveInput && _isDead){
+        else if(!CanRecieveInput && IsDead){
             //Looks at player as it flies away
             PlayerCamera.transform.GetChild(0).LookAt(Corpse.transform.position);
             PlayerCamera.transform.position += new Vector3(0, 1, 0) * Time.deltaTime;
@@ -24,6 +27,12 @@ public class PlayerController : CharacterFunctions {
 
         //Handles Animations
         ControlAnimations();
+    }
+
+    private void FixedUpdate(){
+        if (!Grounded) {
+            PlayerRigidbody.velocity += Physics.gravity * 3 * Time.deltaTime;
+        }
     }
 
     //Player input for the movement
@@ -50,7 +59,7 @@ public class PlayerController : CharacterFunctions {
             MoveState = MovementState.Walking;
 
         //Jumps
-        if (Input.GetButton("Jump")) Movement.Jump(this);
+        if (Input.GetButtonDown("Jump")) Movement.Jump(this);
     }
 
     //Player input for the camera
@@ -69,16 +78,18 @@ public class PlayerController : CharacterFunctions {
         //Stops if the player cannot use their gun
         if (!CanShoot) return;
 
+        //Reloads the gun
+        var reloadConditionOne = Input.GetKeyDown(KeyCode.R) && Primary.ChamberAmmo < Primary.ChamberSize;
+        var reloadConditionTwo = Input.GetMouseButtonDown(0) && Primary.ChamberAmmo <= 0;
+        if ((reloadConditionOne || reloadConditionTwo) && Primary.TotalAmmo > 0 && !_isReloading)
+            StartCoroutine(ReloadGun());
+
         //Shoots the Gun
         bool mousePress = Primary.AutomaticWeapon ? Input.GetMouseButton(0) : Input.GetMouseButtonDown(0);
         if (mousePress && Time.time > _shootTimer && Primary.ChamberAmmo > 0) {
             StartCoroutine(ShootGun());
             UpdatePrimary();
         }
-        
-        //Reloads the gun
-        if (Input.GetKeyDown(KeyCode.R) && Primary.ChamberAmmo < Primary.ChamberSize && Primary.TotalAmmo > 0 && !_isReloading)
-            StartCoroutine(ReloadGun());
 
         //Drops Primary
         if (Input.GetKeyDown(KeyCode.Q) && Primary.ID != 0)

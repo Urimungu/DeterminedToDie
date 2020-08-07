@@ -3,10 +3,17 @@ using UnityEngine;
 
 public class CharacterFunctions : CharacterStats {
 
+    //Starts up the player
+    protected void InitializePlayer() {
+        CameraController.FollowPlayer(0,0,this);
+        CanLook = CanLook;
+    }
+
     //Vitality
     public float CurrentHealth {
         get => _currentHealth;
         set {
+            //Checks to see if play is still alive
             if (value <= 0) 
                 Death();
             
@@ -74,16 +81,6 @@ public class CharacterFunctions : CharacterStats {
     public bool CanRecieveInput {
         get => _canRecieveInput;
         set {
-            //Controls if the Mouse is locked or not
-            if (value){
-                Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false;
-            }
-            else {
-                Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
-            }
-
             _canRecieveInput = value;
         }
     }
@@ -103,7 +100,19 @@ public class CharacterFunctions : CharacterStats {
     //Camera Options
     public bool CanLook {
         get => _canLook;
-        set => _canLook = value;
+        set {
+            //Controls if the Mouse is locked or not
+            if (value){
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            }else{
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+            }
+
+            _canLook = value;
+
+        }
     }
     public float HorizontalSensitivity {
         get => _horizontalSensitivity;
@@ -247,15 +256,31 @@ public class CharacterFunctions : CharacterStats {
         get => _currentFOV;
         set => _currentFOV = value;
     }
+    public bool Grounded {
+        get => _grounded;
+        set => _grounded = value;
+    }
 
     //References
     public Rigidbody PlayerRigidbody
     {
         get => _rigidbody != null ? _rigidbody : _rigidbody = GetComponent<Rigidbody>();
     }
-    public GameObject PlayerCamera
-    {
+    public GameObject PlayerCamera{
         get => _playerCamera != null ? _playerCamera : (_playerCamera = CreateCamera());
+    }
+    public GameObject Corpse
+    {
+        get
+        {
+            if (_corpse == null)
+            {
+                var body = Instantiate(Resources.Load<GameObject>("Prefabs/Ragdoll/DookieRagdoll"), transform.position, transform.rotation);
+                return _corpse = body;
+            }
+
+            return _corpse;
+        }
     }
     public Animator Anim {
         get => _anim != null ? _anim : _anim = transform.Find("Mesh").GetComponent<Animator>();
@@ -272,16 +297,9 @@ public class CharacterFunctions : CharacterStats {
     protected float _shootTimer;
     protected bool _isReloading;
     protected bool _isShooting;
-    protected bool _isDead;
-    public GameObject Corpse {
-        get {
-            if (_corpse == null) {
-                var body = Instantiate(Resources.Load<GameObject>("Prefabs/Ragdoll/DookieRagdoll"), transform.position, transform.rotation);
-                return _corpse = body;
-            }
-
-            return _corpse;
-        }
+    public bool IsDead {
+        get => _isDead;
+        set => _isDead = value;
     }
 
     //Additional Functions
@@ -306,11 +324,11 @@ public class CharacterFunctions : CharacterStats {
         get{
             var colliderBase = transform.position - new Vector3(0, (GetComponent<CapsuleCollider>().height / 2) - 0.3f, 0);
             Ray ray = new Ray(colliderBase, Vector3.down);
-            bool grounded = Physics.SphereCast(ray, 0.25f, CheckGroundRay, GroundMask);
+            Grounded = Physics.SphereCast(ray, 0.25f, CheckGroundRay, GroundMask);
 
-            Anim.SetBool("Grounded", grounded);
+            Anim.SetBool("Grounded", Grounded);
 
-            return grounded;
+            return Grounded;
         }
     }
     public void TakeDamage(float amount){
@@ -326,10 +344,10 @@ public class CharacterFunctions : CharacterStats {
         //Swaps guns if there is room in the secondary hand
         if (Primary.ID != 0 && Secondary.ID == 0)
             SwapWeapons();
-        else if (Primary.ID != 0 && Secondary.ID != 0){
+        else if (Primary.ID != 0 && Secondary.ID != 0)
             DropGun(false);
-        }
-
+        
+        //Updates the guns and the display
         Primary = gun;
         UpdateGunDisplay();
     }
@@ -363,7 +381,7 @@ public class CharacterFunctions : CharacterStats {
     public void Death() {
         //Kills the player
         CanRecieveInput = false;
-        _isDead = true;
+        IsDead = true;
 
         //Disables Colliders and Rigidbody
         transform.GetComponent<Rigidbody>().isKinematic = true;
@@ -456,7 +474,7 @@ public class CharacterFunctions : CharacterStats {
                 //Hits an enemy and deals damage
                 if (hit.collider.GetComponent<EnemyFunctions>() != null){
                     //Damage that that the player will deal
-                    var damage = Random.Range(Primary.Damage - 10, Primary.Damage + 10);
+                    var damage = Primary.Damage * (1 - (hit.distance / Primary.Range));
                     hit.collider.GetComponent<EnemyFunctions>().TakeDamage(damage, transform);
                     sparks = "FX/Blood";
 

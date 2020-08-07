@@ -29,35 +29,16 @@ public class LevelOne : LevelFunctions{
             StateMachine();
     }
 
-
+    //Level Manager State Machine
     private void StateMachine() {
         switch (CurrentState) {
-            case 1:
-                PickUpWeapon();
-                break;
-            case 2:
-                EnterFightingZone();
-                break;
-            case 3:
-                if (!_isProceeding){
-                    _startingZombieCount = GameManager.Instance.ZombiesKilled;
-                    StartCoroutine(ProceedTimer(1));
-                }
-                break;
-            case 4:
-                KillZombies();
-                break;
-            case 5:
-                EnterSafeHouse();
-                break;
-            case 6:
-                //Exits the game
-                if(!_isEnding)
-                    EndLevel(NextLevel, 3);
-                break;
-            default:
-                //Does nothing
-                break;
+            case 1: PickUpWeapon();         break;
+            case 2: EnterFightingZone();    break;
+            case 3: InBetween();            break;
+            case 4: KillZombies();          break;
+            case 5: EnterSafeHouse();       break;
+            case 6: LeaveGame();            break;
+            default:    /*Does nothing*/    break;
         }
     }
 
@@ -83,9 +64,23 @@ public class LevelOne : LevelFunctions{
         //Tells the Player to pick up the weapon
         SetIndicatorPosition(WayPointOne.position);
     }
+    private void InBetween() {
+        if (!_isProceeding)
+            StartCoroutine(ProceedTimer(1));
+        
+    }
     private void KillZombies() {
         //Prevents it from running everything every single frame
         if (GameManager.Instance.ZombiesKilled == _prevKilled) return;
+
+        //First Run Through
+        if (_prevKilled < 0) {
+            _startingZombieCount = GameManager.Instance.ZombiesKilled;
+            _prevKilled = GameManager.Instance.ZombiesKilled;
+            var tempText = Objectives[CurrentState].Replace("#", "<Color=#ffd829>" + neededKills.ToString("0") + "</color>");
+            UpdateUI(tempText);
+            return;
+        }
 
         //Sets Values
         _prevKilled = GameManager.Instance.ZombiesKilled;
@@ -98,8 +93,8 @@ public class LevelOne : LevelFunctions{
         }
 
         //Updates Display
-        var message = Objectives[CurrentState].Replace("#", (neededKills - currentKilled).ToString("0"));
-        UpdateUI(message);
+        var message = Objectives[CurrentState].Replace("#", "<Color=#ffd829>" + (neededKills - currentKilled).ToString("0") + "</color>");
+        UpdateSideObjective(message);
     }
     private void EnterSafeHouse() {
         var distance = (GameManager.Instance.Player.transform.position - WayPointTwo.position).magnitude;
@@ -111,5 +106,10 @@ public class LevelOne : LevelFunctions{
 
         //Tells the Player to pick up the weapon
         SetIndicatorPosition(WayPointTwo.position);
+    }
+    private void LeaveGame(){
+        //Exits the game
+        if (!_isEnding)
+            EndLevel(NextLevel, 3);
     }
 }

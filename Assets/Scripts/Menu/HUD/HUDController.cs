@@ -30,6 +30,14 @@ public class HUDController : HUDFunctions{
     }
 
     /// <summary>
+    /// Updates the objective that appears on the side.
+    /// </summary>
+    /// <param name="text">The text that will be displayed.</param>
+    public void UpdateSideObjective(string text = "") {
+        UpdateObjectiveMarker(text);
+    }
+
+    /// <summary>
     /// Updates the Heads up Display (HUD) when the player can interact with something.
     /// </summary>
     /// <param name="text">The message that will be displayed</param>

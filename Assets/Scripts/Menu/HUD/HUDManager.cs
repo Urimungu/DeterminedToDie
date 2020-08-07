@@ -27,6 +27,8 @@ public class HUDManager : MonoBehaviour {
     [Header("Objectives")]
     [SerializeField] protected GameObject _objectiveDisplay;
     [SerializeField] protected Text _objectiveText;
+    [SerializeField] protected GameObject _objectiveMarker;
+    [SerializeField] protected Text _objectiveMarkerText;
 
     [Header("InputDispaly")]
     [SerializeField] protected GameObject _inputDisplay;

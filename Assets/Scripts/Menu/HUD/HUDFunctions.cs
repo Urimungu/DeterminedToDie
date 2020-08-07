@@ -1,5 +1,6 @@
 ﻿using UnityEngine.UI;
 using UnityEngine;
+using System.Collections;
 
 public class HUDFunctions : HUDManager{
 
@@ -63,6 +64,12 @@ public class HUDFunctions : HUDManager{
     [SerializeField] protected Text ObjectiveText {
         get => _objectiveText != null ? _objectiveText : _objectiveText = transform.Find("MainDisplay/ObjectiveDisplay/Text").GetComponent<Text>();
     }
+    [SerializeField] protected GameObject ObjectiveMarker { 
+        get => _objectiveMarker != null ? _objectiveMarker : _objectiveMarker = transform.Find("MainDisplay/ObjectiveMarker").gameObject;
+    }
+    [SerializeField] protected Text ObjectiveMarkerText {
+        get => _objectiveMarkerText != null ? _objectiveMarkerText : _objectiveMarkerText = transform.Find("MainDisplay/ObjectiveMarker/Text").GetComponent<Text>();
+    }
 
     //Input Display
     [SerializeField] protected GameObject InputDisplay {
@@ -71,6 +78,9 @@ public class HUDFunctions : HUDManager{
     [SerializeField] protected Text InputText {
         get => _inputText != null ? _inputText : _inputText = transform.Find("MainDisplay/InputMessage/Text").GetComponent<Text>();
     }
+
+    //Additional variables
+    private IEnumerator currentFunction;
 
     //Additional Functions
     protected void UpdateAmmo(Text text, int current, int total) {
@@ -81,10 +91,43 @@ public class HUDFunctions : HUDManager{
         icon.sprite = Resources.Load<Sprite>(iconPath) != null ? Resources.Load<Sprite>(iconPath) : Resources.Load<Sprite>("GunIcons/Missing");
     }
     protected void UpdateObjective(string objective = "") {
+        //Clears and updates the main display
         ObjectiveDisplay.SetActive(objective != "");
         ObjectiveText.text = objective;
+
+        //Clears the side objective
+        ObjectiveMarker.SetActive(false);
+        ObjectiveMarkerText.text = "";
+
+        //Stops the IEnumerator if it exists
+        if(currentFunction != null)
+            StopCoroutine(currentFunction);
+
+        //Transfers into the side objective after a while.
+        if (objective != ""){
+            currentFunction = TransferObjective(3, objective);
+            StartCoroutine(currentFunction);
+        }
+    }
+    protected void UpdateObjectiveMarker(string objective = "") {
+        //Clears the side objective
+        ObjectiveMarker.SetActive(objective != "");
+        ObjectiveMarkerText.text = objective;
     }
     protected void UpdateInput(string inputText = "") {
         InputText.text = inputText;
+    }
+
+    //Timed Functions
+    protected IEnumerator TransferObjective(float timer, string objective) {
+        yield return new WaitForSeconds(timer);
+
+        //Turns off the main display
+        ObjectiveDisplay.SetActive(false);
+        ObjectiveText.text = "";
+
+        //Updates the side objective display
+        ObjectiveMarker.SetActive(true);
+        ObjectiveMarkerText.text = objective;
     }
 }

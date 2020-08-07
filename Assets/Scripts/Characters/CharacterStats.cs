@@ -57,6 +57,8 @@ public class CharacterStats : MonoBehaviour{
     [SerializeField] protected float _horOffsetStep = 0.3f;
     [SerializeField] protected float _fovStep = 0.7f;
     [SerializeField] protected float _speedStep = 0.5f;
+    [SerializeField] protected bool _grounded = true;
+    [SerializeField] protected bool _isDead = false;
 
     [HideInInspector] protected float _currentCameraRadius;
     [HideInInspector] protected float _currentHorizontalOffset;

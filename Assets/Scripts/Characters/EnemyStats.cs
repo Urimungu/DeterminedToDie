@@ -7,11 +7,8 @@ public class EnemyStats : MonoBehaviour {
     [SerializeField] protected float _currentHealth = 100;
     [SerializeField] protected float _maxHealth = 100;
     [SerializeField] protected float _staggerChance = 0.25f;
-
-    [Header("Stats")]
-    [SerializeField] protected float _crawlSpeed = 3;
-    [SerializeField] protected float _walkingSpeed = 7;
-    [SerializeField] protected float _runningSpeed = 15;
+    [SerializeField] protected float _patrollingSpeed = 7;
+    [SerializeField] protected float _chasingSpeed = 20;
 
     [Header("Dynamic Variables")]
     [SerializeField] protected float _currentSpeed = 7;
@@ -29,6 +26,11 @@ public class EnemyStats : MonoBehaviour {
     [SerializeField] protected float _detectFallOfDistance = 15;
     [SerializeField] protected LayerMask _groundMask;
 
+    [Header("Patrolling")]
+    [SerializeField] protected float _patrolRadius = 20;
+    [SerializeField] protected Vector3 _patrolPoint;
+    [SerializeField] protected Transform _patrolArea;
+
     [Header("Aesthetics")]
     [SerializeField] protected Material _prevMat;
     [SerializeField] protected Material _damagedMaterial;
@@ -42,5 +44,5 @@ public class EnemyStats : MonoBehaviour {
     [Header("StateMachine")]
     [SerializeField] protected State _currentState;
 
-    public enum State { Nothing, Patrol, Chase, Attack, Death }
+    public enum State { Nothing, Patrol, Chase, Attack, Death, EatPlayer }
 }

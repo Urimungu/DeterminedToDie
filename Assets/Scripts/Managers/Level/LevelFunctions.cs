@@ -33,7 +33,7 @@ public class LevelFunctions : LevelManager {
     }
 
     //References
-    public GameObject Indicator{
+    public GameObject Indicator {
         get {
             if (_indicator == null) {
                 var indicator = Instantiate(Resources.Load<GameObject>("UI/Arrow")).transform;
@@ -50,7 +50,7 @@ public class LevelFunctions : LevelManager {
     protected bool _isEnding;
 
     //Functions
-    public void EndLevel(string levelName, float exitTimer){
+    public void EndLevel(string levelName, float exitTimer) {
         StartCoroutine(LevelEnder(levelName, exitTimer));
     }
     public void Proceed() {
@@ -65,6 +65,11 @@ public class LevelFunctions : LevelManager {
         Indicator.SetActive(show);
     }
     protected void SetIndicatorPosition(Vector3 position) {
+        //Checks if the object to view is infront or behind
+        var dir = position - Camera.main.transform.position;
+        var dot = Vector3.Dot(dir, Camera.main.transform.forward);
+        if (dot < 0) return; 
+
         //Turns itself on if it's off
         if (!Indicator.gameObject.activeInHierarchy)
             ShowIndicator();
@@ -74,15 +79,19 @@ public class LevelFunctions : LevelManager {
         Indicator.GetComponent<RectTransform>().anchoredPosition = newPos;
     }
     protected void FreePlayer(bool free = true) {
-        if (GameManager.Instance != null && GameManager.Instance.Player != null){
+        if (GameManager.Instance != null && GameManager.Instance.Player != null)
             GameManager.Instance.Player.CanRecieveInput = free;
-            GameManager.Instance.Player.CanMove = free;
-        }
+
     }
     protected void UpdateUI(string message) {
-        if (GameManager.Instance != null && GameManager.Instance.HUD != null) {
+        if (GameManager.Instance != null && GameManager.Instance.HUD != null) 
             GameManager.Instance.HUD.UpdateObjectiveDisplay(message);
-        }
+        
+    }
+    protected void UpdateSideObjective(string message) {
+        if (GameManager.Instance != null && GameManager.Instance.HUD != null)
+            GameManager.Instance.HUD.UpdateSideObjective(message);
+        
     }
 
     //Waiting Functions

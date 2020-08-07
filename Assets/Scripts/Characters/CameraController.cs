@@ -30,7 +30,7 @@ public class CameraController{
     }
 
     //Positions the camera in the right place
-    private static void CameraPositioning(CharacterFunctions stats) {
+    public static void CameraPositioning(CharacterFunctions stats) {
         //Addes Horizontal offset
         var direction = stats.HoverRight ? 1 : -1;
         var newPos = stats.transform.position;
@@ -56,7 +56,7 @@ public class CameraController{
     }
 
     //Rotates the player left and right
-    private static void RotateCamera(float hor, CharacterFunctions stats) {
+    public static void RotateCamera(float hor, CharacterFunctions stats) {
         //Depends if the player is aiming down the sights
         var horizontalSensitivity = stats.MoveState == CharacterStats.MovementState.Aiming ? stats.HorizontalAimSensitivity : stats.HorizontalSensitivity;
 

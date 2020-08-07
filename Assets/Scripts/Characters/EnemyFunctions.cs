@@ -23,19 +23,13 @@ public class EnemyFunctions : EnemyStats {
         get => _staggerChance;
         set => _staggerChance = value;
     }
-
-    //Stats
-    public float CrawlSpeed {
-        get => _crawlSpeed;
-        set => _crawlSpeed = value;
+    public float PatrollingSpeed {
+        get => _patrollingSpeed;
+        set => _patrollingSpeed = value;
     }
-    public float WalkingSpeed {
-        get => _walkingSpeed;
-        set => _walkingSpeed = value;
-    }
-    public float RunningSpeed {
-        get => _runningSpeed;
-        set => _runningSpeed = value;
+    public float ChasingSpeed {
+        get => _chasingSpeed;
+        set => _chasingSpeed = value;
     }
 
     //Dynamic Variables
@@ -81,6 +75,33 @@ public class EnemyFunctions : EnemyStats {
     }
     public LayerMask GroundMask {
         get => _groundMask;
+    }
+
+    //Patrolling
+    public float PatrolRadius {
+        get => _patrolRadius;
+        set => _patrolRadius = value;
+    }
+    public Transform PatrolArea {
+        get => _patrolArea;
+        set => _patrolArea = value;
+    }
+    public Vector3 PatrolPoint{
+        get{
+            //Selects a new point
+            if (_patrolPoint == Vector3.zero){
+                var randomPos = Random.insideUnitSphere * PatrolRadius;
+                randomPos += PatrolArea.position;
+
+                //Navmesh Detection
+                NavMesh.SamplePosition(randomPos, out NavMeshHit hit, PatrolRadius, 1);
+                _patrolPoint = hit.position;
+                _patrolPoint.y = transform.position.y;
+            }
+
+            return _patrolPoint;
+        }
+        set => _patrolPoint = value;
     }
 
     //Aesthetics
@@ -130,6 +151,7 @@ public class EnemyFunctions : EnemyStats {
 
     //Additional Varaibles
     protected float _alertTimer;
+    protected bool _arrivedAtDestination = false;
     public bool IsDead = false;
 
     //Additional Functions
@@ -141,16 +163,18 @@ public class EnemyFunctions : EnemyStats {
         foreach (Collider collider in hitColliders){
             if (collider.GetComponent<PlayerController>() != null){
                 Target = collider.transform;
+                CurrentSpeed = ChasingSpeed;
                 return true;
             }
         }
 
+        CurrentSpeed = PatrollingSpeed;
         return false;
     }
     protected void Attack(){
         //Calculates the Attack Logic
         var center = transform.position + (transform.forward * AttackDistance);
-        var size = new Vector3(1, 1, 1);
+        var size = new Vector3(1.5f, 2, 1.5f);
 
         //Checks everything it might hit in the process
         Collider[] damageTakers = Physics.OverlapBox(center, size);
