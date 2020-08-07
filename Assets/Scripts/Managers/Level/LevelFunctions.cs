@@ -44,12 +44,21 @@ public class LevelFunctions : LevelManager {
             return _indicator;
         }
     }
+    public SpawnManager Spawner {
+        get => _spawner;
+        set => _spawner = value;
+    }
 
     //Protected variables
     protected bool _isProceeding;
     protected bool _isEnding;
 
     //Functions
+    protected bool IsInRange(Transform position, float range) {
+        var distance = (GameManager.Instance.Player.transform.position - position.position).magnitude;
+        return distance < range;
+
+    }
     public void EndLevel(string levelName, float exitTimer) {
         StartCoroutine(LevelEnder(levelName, exitTimer));
     }
@@ -58,6 +67,15 @@ public class LevelFunctions : LevelManager {
         CurrentState++;
         Counter = 0;
         UpdateUI(Objectives[CurrentState]);
+    }
+    public void UpdateZombies(float health, float speed, float damage) {
+        if (Spawner != null) 
+            Spawner.UpdateZombieStats(health, speed, damage);
+        
+    }
+    public void CanZombiesSpawn(bool spawn) {
+        if (Spawner != null)
+            Spawner.SpawnEnemies(true);
     }
 
     //Protected Functions

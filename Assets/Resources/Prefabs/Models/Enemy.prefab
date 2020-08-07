@@ -58,13 +58,14 @@ MonoBehaviour:
   _alertTime: 10
   _canMove: 1
   _checkGroundRay: 0.3
-  _detectDistance: 25
+  _detectDistance: 30
   _detectFallOfDistance: 35
   _groundMask:
     serializedVersion: 2
     m_Bits: 55
   _patrolRadius: 20
-  _patrolPoint: {fileID: 0}
+  _patrolPoint: {x: 0, y: 0, z: 0}
+  _patrolArea: {x: 0, y: 0, z: 0}
   _prevMat: {fileID: 0}
   _damagedMaterial: {fileID: 2100000, guid: 0758461a79ca38044b60e7910476f402, type: 2}
   _bodyDecay: 25

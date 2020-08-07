@@ -4,6 +4,7 @@ public class LevelOne : LevelFunctions{
 
     [Header("Specific Stats")]
     [SerializeField] protected GameObject Weapon;
+    [SerializeField] protected GameObject FirstDoor;
     [SerializeField] protected Transform WayPointOne;
     [SerializeField] protected Transform WayPointTwo;
     [SerializeField] protected int neededKills;
@@ -46,6 +47,13 @@ public class LevelOne : LevelFunctions{
         if (Weapon == null) {
             //Hides the Indicator
             ShowIndicator(false);
+
+            //Updates zombies
+            FirstDoor.SetActive(false);
+            UpdateZombies(50, 7, 15);
+            CanZombiesSpawn(true);
+
+            //Proceed to the next objective
             Proceed();
             return;
         }
@@ -54,9 +62,15 @@ public class LevelOne : LevelFunctions{
         SetIndicatorPosition(Weapon.transform.position);
     }
     private void EnterFightingZone() {
-        var distance = (GameManager.Instance.Player.transform.position - WayPointOne.position).magnitude;
-        if (distance < 5) {
+        //Exit Parameter
+        if (IsInRange(WayPointOne, 5)) {
+            //Turns off the waypoint indicator
             ShowIndicator(false);
+
+            //Closes the previous door
+            FirstDoor.SetActive(true);
+
+            //Proceeds to the next level
             Proceed();
             return;
         }
@@ -97,9 +111,12 @@ public class LevelOne : LevelFunctions{
         UpdateSideObjective(message);
     }
     private void EnterSafeHouse() {
-        var distance = (GameManager.Instance.Player.transform.position - WayPointTwo.position).magnitude;
-        if (distance < 5){
+        //Exit Condition
+        if (IsInRange(WayPointTwo, 5)){
+            //Turns off the display
             ShowIndicator(false);
+
+            //Proceeds to the next Objective
             Proceed();
             return;
         }

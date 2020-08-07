@@ -29,7 +29,7 @@ public class EnemyStats : MonoBehaviour {
     [Header("Patrolling")]
     [SerializeField] protected float _patrolRadius = 20;
     [SerializeField] protected Vector3 _patrolPoint;
-    [SerializeField] protected Transform _patrolArea;
+    [SerializeField] protected Vector3 _patrolArea;
 
     [Header("Aesthetics")]
     [SerializeField] protected Material _prevMat;
@@ -40,6 +40,7 @@ public class EnemyStats : MonoBehaviour {
     [SerializeField] protected Transform _target;
     [SerializeField] protected NavMeshAgent _agent;
     [SerializeField] protected Animator _anim;
+    [SerializeField] protected SpawnManager _spawner;
 
     [Header("StateMachine")]
     [SerializeField] protected State _currentState;

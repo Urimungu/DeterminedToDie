@@ -8,11 +8,11 @@ public class EnemyFunctions : EnemyStats {
     public float CurrentHealth {
         get => _currentHealth;
         set {
+            _currentHealth = value;
+
             //Kills the enemy
             if (_currentHealth <= 0)
                 CurrentState = State.Death;
-
-            _currentHealth = value;
         }
     }
     public float MaxHealth {
@@ -82,7 +82,7 @@ public class EnemyFunctions : EnemyStats {
         get => _patrolRadius;
         set => _patrolRadius = value;
     }
-    public Transform PatrolArea {
+    public Vector3 PatrolArea {
         get => _patrolArea;
         set => _patrolArea = value;
     }
@@ -91,7 +91,7 @@ public class EnemyFunctions : EnemyStats {
             //Selects a new point
             if (_patrolPoint == Vector3.zero){
                 var randomPos = Random.insideUnitSphere * PatrolRadius;
-                randomPos += PatrolArea.position;
+                randomPos += PatrolArea;
 
                 //Navmesh Detection
                 NavMesh.SamplePosition(randomPos, out NavMeshHit hit, PatrolRadius, 1);
@@ -127,6 +127,10 @@ public class EnemyFunctions : EnemyStats {
     }
     public Animator Anim {
         get => _anim != null ? _anim : _anim = transform.Find("Mesh").GetComponent<Animator>();
+    }
+    public SpawnManager Spawner {
+        get => _spawner;
+        set => _spawner = value;
     }
     
     //State Machine

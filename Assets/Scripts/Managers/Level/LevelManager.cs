@@ -12,8 +12,9 @@ public class LevelManager : MonoBehaviour{
     [Header("Variables")]
     [SerializeField] protected int _counter;
     [SerializeField] protected List<string> _objectiveList = new List<string>();
-
+ 
     [Header("References")]
     [SerializeField] protected GameObject _indicator;
+    [SerializeField] protected SpawnManager _spawner;
 
 }

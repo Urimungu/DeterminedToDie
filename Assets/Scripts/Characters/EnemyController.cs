@@ -7,9 +7,11 @@ public class EnemyController : EnemyFunctions {
     //Variables
     private float _attackTimer;
     private bool _attacked;
+    private float _spawnTime;
 
     private void Start() {
         PrevMat = null;
+        _spawnTime = Time.time + 10;
     }
 
     private void Update() {
@@ -37,7 +39,14 @@ public class EnemyController : EnemyFunctions {
         if (DetectPlayer()) 
             CurrentState = State.Chase;
 
-        //Exits if the player is already at the destination
+        //If they have been wandering for too long remove them from the game
+        if (Spawner != null && Time.time > _spawnTime && Target == null) {
+            Spawner.RemoveZombie(gameObject);
+            Destroy(gameObject);
+            return;
+        }
+
+        //Exits if the Character is already at the destination
         if (_arrivedAtDestination || PatrolArea == null) return;
 
         //Walks towards the patrol point
