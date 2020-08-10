@@ -4,8 +4,10 @@ using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.UI;
 
-public class SettingsMenu : Menus
+public class SettingsMenu : MonoBehaviour
 {
+    protected MenuData _data;
+
     [Header("Sound Mixer")]
     public AudioMixer masterMixer;
 
@@ -19,6 +21,7 @@ public class SettingsMenu : Menus
 
     private void Start()
     {
+        _data = GetComponent<MenuData>();
         StartSounds();
     }
 

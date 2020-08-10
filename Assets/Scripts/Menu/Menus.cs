@@ -2,7 +2,8 @@
 using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(MenuData))]
-public class Menus : MonoBehaviour{
+public class Menus : MonoBehaviour
+{
     protected MenuData _data;
 
     private void Start()
