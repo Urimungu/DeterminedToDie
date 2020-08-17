@@ -337,7 +337,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 243185110816320544, guid: 93c7f6474b7fa0f46a45b84f1157a6c6,
     type: 2}
   m_audioClip: {fileID: 8300000, guid: 83661a2653b27f44db511a1603acaaa9, type: 3}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 1
@@ -477,9 +477,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f056b1c00da0164dbf701bc63c37f39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fx: {fileID: 0}
-  music: {fileID: 0}
-  dialogue: {fileID: 0}
+  fxSource: {fileID: 0}
+  musicSource: {fileID: 888180111}
+  dialogueSource: {fileID: 0}
+  fxGroup: {fileID: 243842782103048490, guid: 93c7f6474b7fa0f46a45b84f1157a6c6, type: 2}
+  musicGroup: {fileID: 243185110816320544, guid: 93c7f6474b7fa0f46a45b84f1157a6c6,
+    type: 2}
+  dialogueGroup: {fileID: 243350242452761330, guid: 93c7f6474b7fa0f46a45b84f1157a6c6,
+    type: 2}
   lowPitch: 0.95
   highPitch: 1.05
 --- !u!4 &972181322
@@ -1669,6 +1674,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f691abdbb1b7678498be6c0744bab113, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  music: {fileID: 8300000, guid: 83661a2653b27f44db511a1603acaaa9, type: 3}
 --- !u!114 &2104442974
 MonoBehaviour:
   m_ObjectHideFlags: 0

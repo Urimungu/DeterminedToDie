@@ -1,15 +1,18 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Audio;
 
 [RequireComponent(typeof(MenuData))]
 public class Menus : MonoBehaviour
 {
+    public AudioClip music;
     protected MenuData _data;
 
     private void Start()
     {
         _data = GetComponent<MenuData>();
         ChangeMenu("StartScreen");
+        SoundManager.Instance.PlaySound(music, "Music", false, true);
     }
 
     //Changes Menu
