@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class LevelOne : LevelFunctions{
 
@@ -12,13 +13,13 @@ public class LevelOne : LevelFunctions{
     //Varibles
     private int _startingZombieCount;
     private int _prevKilled = -1;
-    
+
 
     private void Start(){
         CurrentState = 0;
 
         //Starts the Game
-        StartCoroutine(StartGame(StartTime));
+        StartGame(StartTime);
 
         //Sets itself in the game manager
         if (GameManager.Instance != null)
@@ -91,7 +92,7 @@ public class LevelOne : LevelFunctions{
         if (_prevKilled < 0) {
             _startingZombieCount = GameManager.Instance.ZombiesKilled;
             _prevKilled = GameManager.Instance.ZombiesKilled;
-            var tempText = Objectives[CurrentState].Replace("#", "<Color=#ffd829>" + neededKills.ToString("0") + "</color>");
+            var tempText = ObjectiveDetails[CurrentState].Objective.Replace("#", "<Color=#ffd829>" + neededKills.ToString("0") + "</color>");
             UpdateUI(tempText);
             return;
         }
@@ -107,7 +108,7 @@ public class LevelOne : LevelFunctions{
         }
 
         //Updates Display
-        var message = Objectives[CurrentState].Replace("#", "<Color=#ffd829>" + (neededKills - currentKilled).ToString("0") + "</color>");
+        var message = ObjectiveDetails[CurrentState].Objective.Replace("#", "<Color=#ffd829>" + (neededKills - currentKilled).ToString("0") + "</color>");
         UpdateSideObjective(message);
     }
     private void EnterSafeHouse() {
@@ -124,9 +125,9 @@ public class LevelOne : LevelFunctions{
         //Tells the Player to pick up the weapon
         SetIndicatorPosition(WayPointTwo.position);
     }
-    private void LeaveGame(){
+    private void LeaveGame(string nextLevel = ""){
         //Exits the game
         if (!_isEnding)
-            EndLevel(NextLevel, 3);
+            EndLevel(nextLevel, 3);
     }
 }

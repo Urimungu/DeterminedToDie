@@ -10,26 +10,28 @@ public class LevelFunctions : LevelManager {
         get => _isPlaying;
         set => _isPlaying = value;
     }
-    public int CurrentState {
-        get => _currentState;
-        set => _currentState = value;
-    }
     public float StartTime {
         get => _startTime;
         set => _startTime = value;
     }
-    public string NextLevel {
-        get => _nextLevel;
+    protected int CurrentState
+    {
+        get => _currentState;
+        set => _currentState = value;
     }
 
     //Variables
-    public int Counter {
-        get => _counter;
-        set => _counter = value;
-    }
-    public List<string> Objectives {
+    public List<ObjectiveStruct.ObjectiveType> Objectives {
         get => _objectiveList;
         set => _objectiveList = value;
+    }
+    public List<ObjectiveStruct> ObjectiveDetails {
+        get => _objectiveDetails;
+        set => _objectiveDetails = value;
+    }
+    public List<bool> SelectedItems {
+        get => _selectedItems;
+        set => _selectedItems = value;
     }
 
     //References
@@ -65,17 +67,15 @@ public class LevelFunctions : LevelManager {
     public void Proceed() {
         //Updates the values here
         CurrentState++;
-        Counter = 0;
-        UpdateUI(Objectives[CurrentState]);
+        ShowIndicator(false);
+        UpdateUI(ObjectiveDetails[CurrentState].Objective);
     }
     public void UpdateZombies(float health, float speed, float damage) {
         if (Spawner != null) 
             Spawner.UpdateZombieStats(health, speed, damage);
-        
     }
     public void CanZombiesSpawn(bool spawn) {
-        if (Spawner != null)
-            Spawner.SpawnEnemies(true);
+        if (Spawner != null)    Spawner.SpawnEnemies(spawn);
     }
 
     //Protected Functions
@@ -89,8 +89,7 @@ public class LevelFunctions : LevelManager {
         if (dot < 0) return; 
 
         //Turns itself on if it's off
-        if (!Indicator.gameObject.activeInHierarchy)
-            ShowIndicator();
+        if (!Indicator.gameObject.activeInHierarchy) ShowIndicator();
 
         //Moves itself ontop of the required position
         var newPos = Camera.main.WorldToScreenPoint(position);
@@ -111,6 +110,9 @@ public class LevelFunctions : LevelManager {
             GameManager.Instance.HUD.UpdateSideObjective(message);
         
     }
+    protected void StartGame(float timer = 0) {
+        StartCoroutine(StartGameTimer(timer));
+    }
 
     //Waiting Functions
     protected IEnumerator LevelEnder(string levelName, float exitTime){
@@ -120,10 +122,10 @@ public class LevelFunctions : LevelManager {
         FreePlayer(false);
         _isEnding = false;
     }
-    protected IEnumerator StartGame(float timer) {
+    protected IEnumerator StartGameTimer(float timer) {
         yield return new WaitForSeconds(timer);
+        IsPlaying = true;
         FreePlayer();
-        Proceed();
     }
     protected IEnumerator ProceedTimer(float timer) {
         _isProceeding = true;
