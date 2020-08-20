@@ -1,13 +1,17 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
+using UnityEngine.SocialPlatforms;
 
 public class EnemyController : EnemyFunctions {
 
     //Variables
     private float _attackTimer;
     private bool _attacked;
+    private float _spawnTime;
 
     private void Start() {
         PrevMat = null;
+        _spawnTime = Time.time + 10;
     }
 
     private void Update() {
@@ -19,18 +23,13 @@ public class EnemyController : EnemyFunctions {
 
     //Controls the Enemy
     private void StateMachine() {
-        switch(_currentState) {
-            case State.Patrol:  
-                Patrol();   
-                break;
-            case State.Chase:     
-                Chase();    
-                break;
+        switch(CurrentState) {
+            case State.Patrol:      Patrol();       break;
+            case State.Chase:       Chase();        break;
+            case State.EatPlayer:   EatPlayer();    break;
 
-            //If it's set to nothing or it doesn't fit the requirements it does nothing
             case State.Nothing:
-            default:
-                break;
+            default:    break;
         }
     }
 
@@ -39,7 +38,33 @@ public class EnemyController : EnemyFunctions {
         //Patrols
         if (DetectPlayer()) 
             CurrentState = State.Chase;
-        
+
+        //If they have been wandering for too long remove them from the game
+        if (Spawner != null && Time.time > _spawnTime && Target == null) {
+            Spawner.RemoveZombie(gameObject);
+            Destroy(gameObject);
+            return;
+        }
+
+        //Exits if the Character is already at the destination
+        if (_arrivedAtDestination || PatrolArea == null) return;
+
+        //Walks towards the patrol point
+        Agent.SetDestination(PatrolPoint);
+
+        //Got to the destination and is stopping for a couple seconds
+        var dist = (transform.position - PatrolPoint).magnitude;
+        if (dist <= 2) {
+            _arrivedAtDestination = true;
+            StartCoroutine(GetToDestination(Random.Range(1f, 4f))); 
+        }
+    }
+
+    //resets the point after a certain amount of time
+    private IEnumerator GetToDestination(float timer) {
+        yield return new WaitForSeconds(timer);
+        PatrolPoint = Vector3.zero;
+        _arrivedAtDestination = false;
     }
 
     //Chases whatever it has found
@@ -47,6 +72,20 @@ public class EnemyController : EnemyFunctions {
         //Makes sure that the target isn't equal to null
         if (Target == null) {
             CurrentState = State.Patrol;
+            return;
+        }
+
+        //The player is dead
+        if (Target.GetComponent<CharacterFunctions>().IsDead) {
+            if (Random.Range(0f, 1f) > 0.8f){
+                Agent.speed = 7;
+                Agent.acceleration = 8;
+                Agent.stoppingDistance = 2;
+                CurrentState = State.EatPlayer;
+                Target = Target.GetComponent<CharacterFunctions>().Corpse.transform.Find("Body");
+            }
+            else
+                CurrentState = State.Patrol;
             return;
         }
 
@@ -71,11 +110,26 @@ public class EnemyController : EnemyFunctions {
         //Attacks the enemy
         if (dist < AttackDistance){
             _attackTimer = Time.time + AttackRate;
+            Anim.SetFloat("AttackSpeed", Random.Range(0.3f, 1f));
             Anim.SetTrigger("Attack");
             _attacked = false;
         }else{
             var newPos = Target.position;
+            Agent.speed = CurrentSpeed;
             Agent.SetDestination(newPos);
+        }
+    }
+
+    //Eats the player
+    private void EatPlayer() {
+        //Attacks the enemy
+        var dist = (Target.position - transform.position).magnitude;
+        if (dist < 2){
+            print("Eating");
+            Anim.SetTrigger("Eat");
+        }else{
+            Agent.speed = CurrentSpeed;
+            Agent.SetDestination(Target.position);
         }
     }
 
