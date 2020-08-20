@@ -6,6 +6,7 @@ public class HUDController : HUDFunctions{
 
         //Clears objectives and other things
         UpdateObjective();
+        UpdateSideObj();
         UpdateInput();
 
         //Returns if there isn't any GameManager on the field
@@ -27,6 +28,10 @@ public class HUDController : HUDFunctions{
     /// <param name="text">The message that will be displayed.</param>
     public void UpdateObjectiveDisplay(string text = "") {
         UpdateObjective(text);
+    }
+    public void UpdateSideObjective(string text = "") {
+        UpdateSideObj(text);
+
     }
 
     /// <summary>

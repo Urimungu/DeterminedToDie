@@ -63,6 +63,12 @@ public class HUDFunctions : HUDManager{
     [SerializeField] protected Text ObjectiveText {
         get => _objectiveText != null ? _objectiveText : _objectiveText = transform.Find("MainDisplay/ObjectiveDisplay/Text").GetComponent<Text>();
     }
+    [SerializeField] protected GameObject SideObjectiveDisplay {
+        get => _sideObjectiveDisplay != null ? _sideObjectiveDisplay : _sideObjectiveDisplay = transform.Find("MainDisplay/ObjectiveMarker").gameObject;
+    }
+    [SerializeField] protected Text SideObjectiveText {
+        get => _sideObjecitveText != null ? _sideObjecitveText : _sideObjecitveText = transform.Find("MainDisplay/ObjectiveMarker/Text").GetComponent<Text>();
+    }
 
     //Input Display
     [SerializeField] protected GameObject InputDisplay {
@@ -83,6 +89,10 @@ public class HUDFunctions : HUDManager{
     protected void UpdateObjective(string objective = "") {
         ObjectiveDisplay.SetActive(objective != "");
         ObjectiveText.text = objective;
+    }
+    protected void UpdateSideObj(string objective = "") {
+        SideObjectiveDisplay.SetActive(objective != "");
+        SideObjectiveText.text = objective;
     }
     protected void UpdateInput(string inputText = "") {
         InputText.text = inputText;
