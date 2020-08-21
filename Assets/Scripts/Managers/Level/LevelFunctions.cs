@@ -63,11 +63,21 @@ public class LevelFunctions : LevelManager {
     }
     public void EndLevel(string levelName, float exitTimer) {
         StartCoroutine(LevelEnder(levelName, exitTimer));
+        if (GameManager.Instance != null && GameManager.Instance.Player != null)
+            GameManager.Instance.Player.CanLook = false;
     }
     public void Proceed() {
         //Updates the values here
         CurrentState++;
         ShowIndicator(false);
+
+        //Ends if there is no more after this state
+        if (ObjectiveDetails.Count <= CurrentState) {
+            IsPlaying = false;
+            return;
+        }
+
+        //Continues
         UpdateUI(ObjectiveDetails[CurrentState].Objective);
     }
     public void UpdateZombies(float health, float speed, float damage) {

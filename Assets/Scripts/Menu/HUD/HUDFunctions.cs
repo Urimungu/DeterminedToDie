@@ -1,5 +1,6 @@
 ﻿using UnityEngine.UI;
 using UnityEngine;
+using System.Collections;
 
 public class HUDFunctions : HUDManager{
 
@@ -78,6 +79,9 @@ public class HUDFunctions : HUDManager{
         get => _inputText != null ? _inputText : _inputText = transform.Find("MainDisplay/InputMessage/Text").GetComponent<Text>();
     }
 
+    //Variables
+    Coroutine Co;
+
     //Additional Functions
     protected void UpdateAmmo(Text text, int current, int total) {
         text.text = current + "/" + total;
@@ -87,14 +91,35 @@ public class HUDFunctions : HUDManager{
         icon.sprite = Resources.Load<Sprite>(iconPath) != null ? Resources.Load<Sprite>(iconPath) : Resources.Load<Sprite>("GunIcons/Missing");
     }
     protected void UpdateObjective(string objective = "") {
+        //Updates the Main Objective on the Screen
         ObjectiveDisplay.SetActive(objective != "");
         ObjectiveText.text = objective;
+
+        //Clears the side objective while the other is being displayed
+        UpdateSideObj("");
+
+        //Ends if there is no objective for the second part
+        if (objective == "") return;
+
+        //Switches the Objective after a certain Amount of time
+        Co = StartCoroutine(SwitchObjectives(objective, 2));
     }
     protected void UpdateSideObj(string objective = "") {
         SideObjectiveDisplay.SetActive(objective != "");
         SideObjectiveText.text = objective;
+
+        //Stops the switching function if these gets updated first
+        if(Co != null)
+            StopCoroutine(Co);
     }
     protected void UpdateInput(string inputText = "") {
         InputText.text = inputText;
+    }
+
+    //Time Functions
+    IEnumerator SwitchObjectives(string text, float time) {
+        yield return new WaitForSeconds(time);
+        UpdateObjective("");
+        UpdateSideObj(text);
     }
 }

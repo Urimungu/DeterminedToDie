@@ -96,7 +96,7 @@ MonoBehaviour:
   _runningSpeed: 15
   _aimingWalkSpeed: 6
   _airSpeed: 3
-  _jumpForce: 3
+  _jumpForce: 20
   _moveState: 0
   _canRecieveInput: 1
   _canMove: 1
@@ -177,8 +177,11 @@ MonoBehaviour:
   _horOffsetStep: 0.3
   _fovStep: 0.7
   _speedStep: 0.5
+  _grounded: 1
+  _isDead: 0
   _rigidbody: {fileID: 0}
   _playerCamera: {fileID: 0}
+  _corpse: {fileID: 0}
   _anim: {fileID: 0}
   _gunHolder: {fileID: 0}
   _shootPoint: {fileID: 0}

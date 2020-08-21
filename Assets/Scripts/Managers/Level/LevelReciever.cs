@@ -102,7 +102,7 @@ public class LevelReciever : LevelFunctions{
         //Exit Condition
         if (Time.time > _waitStartTime) {
             Proceed();
-            _waitStartTime = -1;
+            ExitFunctions(ID);
         }
     }
     private void PickUp(int ID) {

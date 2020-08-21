@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 
 public class CharacterFunctions : CharacterStats {
@@ -388,6 +389,9 @@ public class CharacterFunctions : CharacterStats {
         transform.GetComponent<CapsuleCollider>().enabled = false;
         WeaponHandle.gameObject.SetActive(false);
         transform.Find("Mesh").gameObject.SetActive(false);
+
+        //Starts Over
+        StartCoroutine(Respawn(5));
     }
 
     //Protected Functions
@@ -543,5 +547,10 @@ public class CharacterFunctions : CharacterStats {
         }
 
         Destroy(damageText.gameObject);
+    }
+    protected IEnumerator Respawn(float time) {
+        yield return new WaitForSeconds(time);
+        string sceneName = SceneManager.GetActiveScene().name;
+        SceneManager.LoadScene(sceneName);
     }
 }
